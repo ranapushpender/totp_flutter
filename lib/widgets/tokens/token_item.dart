@@ -22,6 +22,7 @@ class _TokenItemState extends State<TokenItem> {
   void generateCode() {
     setState(() {
       var cdate = DateTime.now();
+      try{
       generatedToken = OTP
           .generateTOTPCodeString(
             widget.token.token,
@@ -31,6 +32,10 @@ class _TokenItemState extends State<TokenItem> {
             algorithm: Algorithm.SHA1,
           )
           .toString();
+        }
+        catch(StackTrace){
+          generatedToken = "INVALID";
+        }
     });
     int toAdd = 0;
     var cdate = DateTime.now();
@@ -49,19 +54,10 @@ class _TokenItemState extends State<TokenItem> {
   @override
   Widget build(BuildContext context) {
     generateCode();
-    print("Printing test codes");
-    var code = OTP.generateTOTPCodeString('JBSWY3DPEHPK3PXP', DateTime.now().millisecondsSinceEpoch);
-    print(code);
-
-    var code2 = OTP.generateTOTPCodeString('JBSWY3DPEHPK3PXP', DateTime.now().millisecondsSinceEpoch, interval: 10);
-    print(code2);
-
-    var code3 = OTP.generateTOTPCodeString('JBSWY3DPEHPK3PXP', DateTime.now().millisecondsSinceEpoch, interval: 20, algorithm: Algorithm.SHA512);
-    print(code3);
     return Container(
       child: Container(
         margin: EdgeInsets.only(bottom: 18),
-        padding: EdgeInsets.symmetric(horizontal: 15, vertical: 15),
+        padding: EdgeInsets.only(left: 15,right: 0,top: 18,bottom: 18),
         decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(10),
@@ -78,7 +74,7 @@ class _TokenItemState extends State<TokenItem> {
               child: CircleAvatar(
                 backgroundColor: Colors.transparent,
                 child: Text(
-                  widget.token.website.substring(0, 1).toUpperCase(),
+                  widget.token.website == null ? "I" : widget.token.website.substring(0, 1).toUpperCase(),
                   style: TextStyle(
                       fontWeight: FontWeight.bold,
                       color: Colors.white,
@@ -109,9 +105,9 @@ class _TokenItemState extends State<TokenItem> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     Text(
-                      widget.token.website,
+                      widget.token.website == null ? "Unavailable" : widget.token.website,
                       style: TextStyle(
-                        fontSize: 20,
+                        fontSize: 18,
                         color: Color.fromRGBO(88, 88, 88, 1),
                       ),
                     ),

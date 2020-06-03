@@ -25,17 +25,26 @@ class _TokensState extends State<Tokens> {
   }
 
   void getTokens() async {
+    await TokenHelper.init();
     tokens = await TokenHelper.getTokens();
+    setState(() {
+      tokens =tokens;
+    });
 
   }
 
   void addTokenTest() async {
-    /*Token token = Token(
+    Token token = Token(
         email: "dsds",
         id: 24342,
         token: "JBSWY3DPEHPK3PXP",
         website: "Alibaba.com");
-    var tokenHelper = TokenHelper.init();
+    await TokenHelper.insertToken(token);
+    tokens = await TokenHelper.getTokens();
+    setState(() {
+      tokens = tokens;
+    });
+    /*var tokenHelper = TokenHelper.init();
     await (tokenHelper.insertToken(token));
     var localTokens = (await tokenHelper.getTokens()) as List<Token>;
     setState(() {
@@ -54,9 +63,11 @@ class _TokensState extends State<Tokens> {
         });
   }
 
-  void addToken(Token token) {
+  void addToken(Token token) async {
+    await TokenHelper.insertToken(token);
+    tokens = await TokenHelper.getTokens();
     setState(() {
-      tokens.add(token);
+      tokens = tokens;
     });
   }
 
@@ -214,7 +225,7 @@ class _TokensState extends State<Tokens> {
                           ],
                         ),
                         margin:
-                            EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                            EdgeInsets.only(left: 20,right: 20, bottom: 10,top:5),
                         padding: EdgeInsets.symmetric(horizontal: 0),
                         height: 45,
                         child: ClipRRect(

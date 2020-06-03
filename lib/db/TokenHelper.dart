@@ -3,9 +3,9 @@ import 'package:sqflite/sqflite.dart';
 import "../models/Token.dart";
 
 class TokenHelper {
-  static Database database;
+  static Database database=null;
 
-  static void init() async {
+  static Future<void> init() async {
     if(database!=null)
     {
       return;
@@ -32,7 +32,7 @@ class TokenHelper {
           email: tokens[index]["email"],
           id: tokens[index]["id"],
           token: tokens[index]["token"],
-          website: tokens[index]["token"]);
+          website: tokens[index]["website"]);
     });
     return returnTokens;
   }

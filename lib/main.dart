@@ -5,9 +5,6 @@ import 'package:flutter_statusbarcolor/flutter_statusbarcolor.dart';
 import "./db/TokenHelper.dart";
 
 void main() async {
-  WidgetsBinding wb = WidgetsFlutterBinding.ensureInitialized();
-  wb.
-  await TokenHelper.init();
   return runApp(TotpApp());
 }
 

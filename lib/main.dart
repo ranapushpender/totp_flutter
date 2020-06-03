@@ -2,8 +2,12 @@ import "package:flutter/material.dart";
 import "./screens/login.dart";
 import "./screens/tokens.dart";
 import 'package:flutter_statusbarcolor/flutter_statusbarcolor.dart';
+import "./db/TokenHelper.dart";
 
-void main() {
+void main() async {
+  WidgetsBinding wb = WidgetsFlutterBinding.ensureInitialized();
+  wb.
+  await TokenHelper.init();
   return runApp(TotpApp());
 }
 

@@ -1,14 +1,67 @@
 import "package:flutter/material.dart";
+import "../../models/Token.dart";
+import "package:otp/otp.dart";
 
-class TokenItem extends StatelessWidget {
-  const TokenItem({Key key}) : super(key: key);
+class TokenItem extends StatefulWidget {
+  Token token;
+  TokenItem({this.token});
+
+  @override
+  _TokenItemState createState() => _TokenItemState();
+}
+
+class _TokenItemState extends State<TokenItem> {
+  String generatedToken;
+
+  @override
+  void initState() {
+    generatedToken = "000000";
+    super.initState();
+  }
+
+  void generateCode() {
+    setState(() {
+      var cdate = DateTime.now();
+      generatedToken = OTP
+          .generateTOTPCodeString(
+            widget.token.token,
+            cdate.toUtc().millisecondsSinceEpoch,
+            interval: 30,
+            length: 6,
+            algorithm: Algorithm.SHA1,
+          )
+          .toString();
+    });
+    int toAdd = 0;
+    var cdate = DateTime.now();
+    if(cdate.second>=30)
+    {
+      toAdd = 60-cdate.second;
+    }
+    else{
+      toAdd = 30 - cdate.second;
+    }
+    Future.delayed(Duration(seconds: toAdd) , () {
+      generateCode();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
+    generateCode();
+    print("Printing test codes");
+    var code = OTP.generateTOTPCodeString('JBSWY3DPEHPK3PXP', DateTime.now().millisecondsSinceEpoch);
+    print(code);
+
+    var code2 = OTP.generateTOTPCodeString('JBSWY3DPEHPK3PXP', DateTime.now().millisecondsSinceEpoch, interval: 10);
+    print(code2);
+
+    var code3 = OTP.generateTOTPCodeString('JBSWY3DPEHPK3PXP', DateTime.now().millisecondsSinceEpoch, interval: 20, algorithm: Algorithm.SHA512);
+    print(code3);
     return Container(
       child: Container(
         margin: EdgeInsets.only(bottom: 18),
-        padding: EdgeInsets.symmetric(horizontal: 15, vertical: 20),
+        padding: EdgeInsets.symmetric(horizontal: 15, vertical: 15),
         decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(10),
@@ -25,15 +78,15 @@ class TokenItem extends StatelessWidget {
               child: CircleAvatar(
                 backgroundColor: Colors.transparent,
                 child: Text(
-                  "G",
+                  widget.token.website.substring(0, 1).toUpperCase(),
                   style: TextStyle(
                       fontWeight: FontWeight.bold,
                       color: Colors.white,
                       fontSize: 22),
                 ),
               ),
-              width: 55,
-              height: 55,
+              width: 45,
+              height: 45,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 gradient: LinearGradient(
@@ -56,7 +109,7 @@ class TokenItem extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     Text(
-                      "Google.com",
+                      widget.token.website,
                       style: TextStyle(
                         fontSize: 20,
                         color: Color.fromRGBO(88, 88, 88, 1),
@@ -66,7 +119,7 @@ class TokenItem extends StatelessWidget {
                       height: 5,
                     ),
                     Text(
-                      "ranapushpender",
+                      widget.token.email,
                       style: TextStyle(
                         color: Color.fromRGBO(152, 152, 152, 1),
                       ),
@@ -81,7 +134,7 @@ class TokenItem extends StatelessWidget {
               child: Row(
                 children: <Widget>[
                   FlatButton(
-                    child: Text("999 999"),
+                    child: Text(this.generatedToken.toString()),
                     onPressed: () {},
                     textColor: Color.fromRGBO(25, 208, 36, 1),
                   )

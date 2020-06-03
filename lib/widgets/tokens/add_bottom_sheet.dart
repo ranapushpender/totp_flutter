@@ -1,7 +1,13 @@
 import "package:flutter/material.dart";
+import 'package:barcode_scan/barcode_scan.dart';
+import "../../models/Token.dart";
 
 class AddBottomSheet extends StatelessWidget {
-  const AddBottomSheet({Key key}) : super(key: key);
+
+  final addToken;
+  final tokenTest;
+
+  AddBottomSheet({this.addToken,this.tokenTest});
 
   @override
   Widget build(BuildContext context) {
@@ -50,12 +56,25 @@ class AddBottomSheet extends StatelessWidget {
                   "USE CAMERA",
                   style: TextStyle(color: Colors.blue),
                 ),
-                onPressed: () {},
+                onPressed: () async {
+                  var result = await BarcodeScanner.scan();
+                  print(result.rawContent.toString());
+                  Map<String,String> tokenInfo={};
+                  String username = result.rawContent.split("totp/")[1].split("?")[0];
+                  List<String> credentials = result.rawContent.split("totp/")[1].split("?")[1].split("&");
+
+                  for(int i=0;i<credentials.length;i++)
+                  {
+                    tokenInfo[credentials[i].split("=")[0]] = credentials[i].split("=")[1];
+                  }
+                  var newToken = Token(email: username,id: DateTime.now().millisecondsSinceEpoch,token: tokenInfo["secret"],website: tokenInfo["issuer"]);
+                  addToken(newToken);
+                },
               ),
               RaisedButton(
                 elevation: 0,
                 color: Color.fromRGBO(55, 163, 255, 1),
-                onPressed: () {},
+                onPressed: () {this.tokenTest();},
                 child: Text(
                   "SUBMIT",
                   style: TextStyle(

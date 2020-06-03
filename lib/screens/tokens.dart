@@ -1,6 +1,8 @@
 import "package:flutter/material.dart";
 import "../widgets/tokens/token_item.dart";
 import "../widgets/tokens/add_bottom_sheet.dart";
+import "../models/Token.dart";
+import "../db/TokenHelper.dart";
 
 class Tokens extends StatefulWidget {
   Tokens({Key key}) : super(key: key);
@@ -10,12 +12,52 @@ class Tokens extends StatefulWidget {
 }
 
 class _TokensState extends State<Tokens> {
+  List<Token> tokens = [];
+
+  @override
+  void initState() {
+    initTokens();
+    super.initState();
+  }
+
+  void initTokens()  {
+    getTokens();
+  }
+
+  void getTokens() async {
+    tokens = await TokenHelper.getTokens();
+
+  }
+
+  void addTokenTest() async {
+    /*Token token = Token(
+        email: "dsds",
+        id: 24342,
+        token: "JBSWY3DPEHPK3PXP",
+        website: "Alibaba.com");
+    var tokenHelper = TokenHelper.init();
+    await (tokenHelper.insertToken(token));
+    var localTokens = (await tokenHelper.getTokens()) as List<Token>;
+    setState(() {
+      tokens = localTokens;
+    });*/
+  }
+
   void showAddSheet(BuildContext context) {
     showModalBottomSheet(
         context: context,
         builder: (_) {
-          return AddBottomSheet();
+          return AddBottomSheet(
+            addToken: this.addToken,
+            tokenTest: this.addTokenTest,
+          );
         });
+  }
+
+  void addToken(Token token) {
+    setState(() {
+      tokens.add(token);
+    });
   }
 
   @override
@@ -95,9 +137,11 @@ class _TokensState extends State<Tokens> {
                         ? SizedBox(
                             height: 28,
                           )
-                        : TokenItem();
+                        : TokenItem(
+                            token: tokens[index - 1],
+                          );
                   },
-                  itemCount: 15,
+                  itemCount: tokens.length + 1,
                 ),
               ),
             ),

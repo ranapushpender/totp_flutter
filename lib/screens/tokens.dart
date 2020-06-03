@@ -1,5 +1,6 @@
 import "package:flutter/material.dart";
 import "../widgets/tokens/token_item.dart";
+import "../widgets/tokens/add_bottom_sheet.dart";
 
 class Tokens extends StatefulWidget {
   Tokens({Key key}) : super(key: key);
@@ -9,43 +10,133 @@ class Tokens extends StatefulWidget {
 }
 
 class _TokensState extends State<Tokens> {
+  void showAddSheet(BuildContext context) {
+    showModalBottomSheet(
+        context: context,
+        builder: (_) {
+          return AddBottomSheet();
+        });
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      bottomNavigationBar: BottomNavigationBar(
+        items: [
+          BottomNavigationBarItem(
+            backgroundColor: Colors.white,
+            icon: Icon(
+              Icons.list,
+              color: Colors.blue,
+            ),
+            title: Text(
+              "Tokens",
+              style: TextStyle(color: Colors.blue),
+            ),
+          ),
+          BottomNavigationBarItem(
+            backgroundColor: Colors.white,
+            icon: Icon(
+              Icons.backup,
+              color: Colors.blue,
+            ),
+            title: Text(
+              "Backup",
+              style: TextStyle(color: Colors.blue),
+            ),
+          ),
+          BottomNavigationBarItem(
+            backgroundColor: Colors.white,
+            icon: Icon(
+              Icons.feedback,
+              color: Colors.blue,
+            ),
+            title: Text(
+              "Feedback",
+              style: TextStyle(color: Colors.blue),
+            ),
+          ),
+          BottomNavigationBarItem(
+            backgroundColor: Colors.white,
+            icon: Icon(
+              Icons.person,
+              color: Colors.blue,
+            ),
+            title: Text(
+              "Support",
+              style: TextStyle(color: Colors.blue),
+            ),
+          ),
+        ],
+        currentIndex: 1,
+        showUnselectedLabels: true,
+      ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
+        onPressed: () {
+          showAddSheet(context);
+        },
         child: Icon(Icons.add),
       ),
-      body: Column(
+      body: Stack(
+        alignment: Alignment.topCenter,
         children: <Widget>[
           Container(
-            height: 180,
+            margin: EdgeInsets.only(top: 185),
+            child: SingleChildScrollView(
+              child: Container(
+                height: MediaQuery.of(context).size.height -
+                    MediaQuery.of(context).padding.top -
+                    75 -
+                    65,
+                child: ListView.builder(
+                  padding: EdgeInsets.symmetric(horizontal: 15, vertical: 20),
+                  itemBuilder: (buildContext, index) {
+                    return index == 0
+                        ? SizedBox(
+                            height: 28,
+                          )
+                        : TokenItem();
+                  },
+                  itemCount: 15,
+                ),
+              ),
+            ),
+          ),
+          Container(
+            height: 190,
+            width: MediaQuery.of(context).size.width,
             margin: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
             child: Stack(
               alignment: Alignment.center,
               children: <Widget>[
-                Image.asset(
-                  "assets/tokens-header.png",
-                  height: 180,
-                  fit: BoxFit.fill,
+                Container(
+                  width: double.infinity,
+                  height: double.infinity,
+                  decoration: BoxDecoration(
+                    image: DecorationImage(
+                        image: AssetImage("assets/tokens-header.png"),
+                        fit: BoxFit.cover),
+                  ),
                 ),
                 Padding(
                   padding: EdgeInsets.only(bottom: 25),
                   child: Column(
                     children: <Widget>[
                       SizedBox(
-                        height: 20,
+                        height: 8,
                       ),
                       Container(
-                        padding: EdgeInsets.symmetric(horizontal: 20),
+                        padding: EdgeInsets.symmetric(horizontal: 5),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: <Widget>[
-                            Text(
-                              "ADMIN",
-                              style: TextStyle(color: Colors.white,fontSize: 14),
-                              
+                            FlatButton(
+                              child: Text(
+                                "ADMIN",
+                                style: TextStyle(
+                                    color: Colors.white, fontSize: 14),
+                              ),
+                              onPressed: () {},
                             ),
                             Text(
                               "Tokens",
@@ -55,15 +146,16 @@ class _TokensState extends State<Tokens> {
                                 fontSize: 22,
                               ),
                             ),
-                            Text(
-                              "LOGOUT",
-                              style: TextStyle(color: Colors.white,fontSize: 14),
+                            FlatButton(
+                              child: Text(
+                                "LOGOUT",
+                                style: TextStyle(
+                                    color: Colors.white, fontSize: 14),
+                              ),
+                              onPressed: () {},
                             ),
                           ],
                         ),
-                      ),
-                      SizedBox(
-                        height: 5,
                       ),
                       Container(
                         alignment: Alignment.center,
@@ -101,7 +193,7 @@ class _TokensState extends State<Tokens> {
                         ),
                       ),
                       SizedBox(
-                        height: 6,
+                        height: 8,
                       ),
                       Container(
                         child: Row(
@@ -123,29 +215,12 @@ class _TokensState extends State<Tokens> {
                           ],
                         ),
                         width: double.infinity,
-                        padding: EdgeInsets.symmetric(horizontal: 30),
+                        padding: EdgeInsets.symmetric(horizontal: 25),
                       )
                     ],
                   ),
                 ),
               ],
-            ),
-          ),
-          Container(
-            child: SingleChildScrollView(
-              child: Container(
-                height: MediaQuery.of(context).size.height -
-                    MediaQuery.of(context).padding.top -
-                    75 -
-                    105,
-                child: ListView.builder(
-                  padding: EdgeInsets.symmetric(horizontal: 15, vertical: 20),
-                  itemBuilder: (buildContext, index) {
-                    return TokenItem();
-                  },
-                  itemCount: 15,
-                ),
-              ),
             ),
           ),
         ],

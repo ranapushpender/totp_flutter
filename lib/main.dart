@@ -4,6 +4,7 @@ import "./screens/tokens.dart";
 import 'package:flutter_statusbarcolor/flutter_statusbarcolor.dart';
 import "./db/TokenHelper.dart";
 
+
 void main() async {
   return runApp(TotpApp());
 }
@@ -14,7 +15,7 @@ class TotpApp extends StatelessWidget {
     FlutterStatusbarcolor.setStatusBarColor(Color.fromRGBO(55, 163, 255, 1));
     return MaterialApp(
       theme: ThemeData(primarySwatch: Colors.blue),
-      home: Tokens(),
+      home: Home(),
       routes: {"/tokens": (context) => Tokens()},
     );
   }
@@ -26,6 +27,7 @@ class Home extends StatefulWidget {
 }
 
 class HomeState extends State<Home> {
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

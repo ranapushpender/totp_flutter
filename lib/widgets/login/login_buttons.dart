@@ -1,7 +1,12 @@
 import "package:flutter/material.dart";
 
 class LoginButtons extends StatelessWidget {
-  const LoginButtons({
+  final login;
+  final register;
+
+  LoginButtons({
+    this.login,
+    this.register,
     Key key,
   }) : super(key: key);
 
@@ -19,7 +24,10 @@ class LoginButtons extends StatelessWidget {
             child: RaisedButton(
               elevation: 0,
               color: Color.fromRGBO(55, 163, 255, 1),
-              onPressed: () { Navigator.of(context).pushNamed("/tokens"); },
+              onPressed: () {
+                //Navigator.of(context).pushNamed("/tokens");
+                this.login();
+              },
               textColor: Colors.white,
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(50)),
@@ -38,7 +46,9 @@ class LoginButtons extends StatelessWidget {
               borderSide: BorderSide(color: Color.fromRGBO(55, 163, 255, 1)),
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(50)),
-              onPressed: () {},
+              onPressed: () {
+                this.register();
+              },
             ),
           ),
         ],

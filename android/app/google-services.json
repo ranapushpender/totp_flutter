@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "1018550711906",
+    "firebase_url": "https://totp-flutter.firebaseio.com",
+    "project_id": "totp-flutter",
+    "storage_bucket": "totp-flutter.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1018550711906:android:a3f188ed025492329fc33b",
+        "android_client_info": {
+          "package_name": "com.example.totp_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1018550711906-1ui8ii7o1qe1bsqo7f6g5sssg287efkc.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBoTkZBxvG2P6CikBOobfyUbIAIIEPcqwo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1018550711906-1ui8ii7o1qe1bsqo7f6g5sssg287efkc.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

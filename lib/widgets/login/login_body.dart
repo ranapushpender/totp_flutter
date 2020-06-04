@@ -4,6 +4,7 @@ import "./login_fields.dart";
 import "./login_buttons.dart";
 import "package:cloud_firestore/cloud_firestore.dart";
 import "../../encryption/encryption.dart";
+import "package:flutter/services.dart";
 
 class LoginBody extends StatefulWidget {
   Firestore db;
@@ -57,19 +58,32 @@ class _LoginBodyState extends State<LoginBody> {
         var document = await Firestore.instance.collection("/users").document(uid).get();
 
         if (!document.exists){
+          const platform = MethodChannel("com.flutter.epic/epic");
           print("Generating master key");
-          List<StringBuffer> credentials = await EncryptionHelper.createMasterKey(
-            new StringBuffer(passwordController.text),
+          List<dynamic> credentials = await platform.invokeMethod(
+              'generateEncryptionKey',
+              {"password": "123456"},
+            );
+          print(credentials);
+         /* List<StringBuffer> credentials = await EncryptionHelper.createMasterKey(
+            new StringBuffer("123456"),
           );
+          
+          */
           await Firestore.instance.collection("/users").document(uid).setData({
             "uid":uid
           });
           await Firestore.instance.collection("/users").document(uid).collection("keys").document("masterKey").setData({
-            "masterKey": credentials[0].toString(),
-            "salt": credentials[1].toString(),
+            "masterKey": credentials[0],
+            "salt": credentials[1],
           });
-          credentials[0].clear();
-          credentials[1].clear();
+          var encryptedMasterKeyDocument = await Firestore.instance.collection("/users").document(uid).collection("keys").document("masterKey").get();
+          var clientDerivedKey = await platform.invokeMethod('getEncryptionKey',{"password":"123456".toString(),"salt":credentials[1].toString()});
+          print(clientDerivedKey);
+          var rckey = await platform.invokeMethod('decryptKey',{"encKey":clientDerivedKey,"masterKey":credentials[0]});
+          print(rckey);
+          return;
+          
         }
         else{
           print("No need for master key");

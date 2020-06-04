@@ -129,7 +129,7 @@ public class MainActivity extends FlutterActivity {
                 SecretKeySpec encKeySpec = new SecretKeySpec(encKey,"AES");
                 cipher.init(Cipher.ENCRYPT_MODE,encKeySpec);
                 byte[] cipherText = cipher.doFinal(binary);
-
+                Log.d("Generating Key Original Key Genrated",android.util.Base64.encodeToString(cipherText, Base64.URL_SAFE));
                 result[0] =  android.util.Base64.encodeToString(cipherText, Base64.URL_SAFE);
                 result[1] = android.util.Base64.encodeToString(salt,Base64.URL_SAFE);
             }

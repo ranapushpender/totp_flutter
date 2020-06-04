@@ -3,14 +3,14 @@ import 'package:flutter/material.dart';
 import "./login_fields.dart";
 import "./login_buttons.dart";
 import "package:cloud_firestore/cloud_firestore.dart";
-import "package:flutter/services.dart";
+import "../../encryption/encryption.dart";
 
 class LoginBody extends StatefulWidget {
   Firestore db;
 
   LoginBody({
     Key key,
-  }) : super(key: key){
+  }) : super(key: key) {
     db = Firestore.instance;
   }
 
@@ -23,48 +23,72 @@ class _LoginBodyState extends State<LoginBody> {
 
   final passwordController = TextEditingController();
 
-  Future<void> getResponse() async {
-      const platform = MethodChannel("com.flutter.epic/epic");
-      List<dynamic> result = await platform.invokeMethod('generateEncryptionKey',{"username":"pushpender661@gmail.com","password":"palakpaneer"});
-      print("Encrypted master key : ${result[0]}\nSalt : ${result[1]}");
-      String encryptionKey = await platform.invokeMethod('getEncryptionKey',{"password":"palakpaneer","salt":result[1]});
-      print("PBKDF Encryption key : $encryptionKey");
-      String masterKey = await platform.invokeMethod('decryptKey',{"encKey":encryptionKey,"masterKey":result[0]});
-      print("Decrypted master key :  $masterKey");
-      String encryptedToken = await platform.invokeMethod("encrypt",{"token":"HelloTest I am","key":masterKey});
-      String decryptedToken = await platform.invokeMethod("decrypt",{"token":encryptedToken,"key":masterKey});
-      print("Encrypted Token : $encryptedToken");
-      print("Decrypted Token : $decryptedToken");
-
-
-    }
+  Future<void> getResponse() async {}
 
   void register() async {
-    try{
-      var result = await FirebaseAuth.instance.createUserWithEmailAndPassword(email: "pushpender661@gmail.com", password: "123456");
-      try{
+    try {
+      var result = await FirebaseAuth.instance.createUserWithEmailAndPassword(
+          email: "pushpender661@gmail.com", password: "123456");
+      try {
         FirebaseUser user = await FirebaseAuth.instance.currentUser();
-        if(!user.isEmailVerified)
-        {
+        if (!user.isEmailVerified) {
           user.sendEmailVerification();
         }
-      }
-      catch(e){
+      } catch (e) {
         print("Some error has occured");
       }
-    }
-    catch(e){
+    } catch (e) {
       print("Error user may already exist");
+      print(e);
     }
   }
 
   void login() async {
-    try{
-      var result = await FirebaseAuth.instance.signInWithEmailAndPassword(email: "pushpendder661@gmail.com", password: "123456");
-      Navigator.pushReplacementNamed(context, "/tokens");
-    }
-    catch(e){
-      print("Invalid username or password or the user exists: ${e.toString()} ===");
+    try {
+      var result = await FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: "pushpender661@gmail.com",
+        password: "123456",
+      );
+      var currentUser = await FirebaseAuth.instance.currentUser();
+      if(currentUser.isEmailVerified)
+      {
+        
+        var uid = currentUser.uid;
+        var document = await Firestore.instance.collection("/users").document(uid).get();
+
+        if (!document.exists){
+          print("Generating master key");
+          List<StringBuffer> credentials = await EncryptionHelper.createMasterKey(
+            new StringBuffer(passwordController.text),
+          );
+          await Firestore.instance.collection("/users").document(uid).setData({
+            "uid":uid
+          });
+          await Firestore.instance.collection("/users").document(uid).collection("keys").document("masterKey").setData({
+            "masterKey": credentials[0].toString(),
+            "salt": credentials[1].toString(),
+          });
+          credentials[0].clear();
+          credentials[1].clear();
+        }
+        else{
+          print("No need for master key");
+        }
+        StringBuffer tempPassword = new StringBuffer("123456");
+        await EncryptionHelper.createHelper(tempPassword);
+        tempPassword.clear();
+        passwordController.clear();
+        //Navigator.pushReplacementNamed(context, "/tokens");
+      }
+      else{
+        currentUser.sendEmailVerification();
+        print("Email Verification sent");
+      }
+      
+      //Navigator.pushReplacementNamed(context, "/tokens");
+    } catch (e) {
+      print(
+          "Invalid username or password or the user exists: ${e.toString()} ===");
     }
   }
 
@@ -119,7 +143,9 @@ class _LoginBodyState extends State<LoginBody> {
               FlatButton(
                 child: Text("Forgot Password ?"),
                 textColor: Color.fromRGBO(55, 163, 255, 1),
-                onPressed: () {getResponse();},
+                onPressed: () {
+                  getResponse();
+                },
               ),
             ],
           ),

@@ -76,10 +76,10 @@ public class MainActivity extends FlutterActivity {
             if(android.os.Build.VERSION.SDK_INT >= 8) {
                 int iterationCount = 100;
                 int keyLength = 256;
-                KeySpec spec = new PBEKeySpec(password.toCharArray(), android.util.Base64.decode(salt, Base64.DEFAULT), iterationCount, keyLength);
+                KeySpec spec = new PBEKeySpec(password.toCharArray(), android.util.Base64.decode(salt, Base64.URL_SAFE), iterationCount, keyLength);
                 SecretKeyFactory factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA256");
                 SecretKey encSecretKey = factory.generateSecret(spec);
-                encKey = android.util.Base64.encodeToString(encSecretKey.getEncoded(), Base64.DEFAULT);
+                encKey = android.util.Base64.encodeToString(encSecretKey.getEncoded(), Base64.URL_SAFE);
             }
         }
         catch(Exception e)
@@ -92,13 +92,13 @@ public class MainActivity extends FlutterActivity {
         String decrypted = "";
         try{
             if(android.os.Build.VERSION.SDK_INT >= 8){
-                byte[] encKeyBytes = android.util.Base64.decode(encKey,Base64.DEFAULT);
-                byte[] masterKeyBytes = Base64.decode(masterKey,Base64.DEFAULT);
+                byte[] encKeyBytes = android.util.Base64.decode(encKey,Base64.URL_SAFE);
+                byte[] masterKeyBytes = Base64.decode(masterKey,Base64.URL_SAFE);
                 Cipher cipher = Cipher.getInstance("AES");
                 SecretKeySpec encKeySpec = new SecretKeySpec(encKeyBytes,"AES");
                 cipher.init(Cipher.DECRYPT_MODE,encKeySpec);
                 byte[] cipherText = cipher.doFinal(masterKeyBytes);
-                decrypted = Base64.encodeToString(cipherText,Base64.DEFAULT);
+                decrypted = Base64.encodeToString(cipherText,Base64.URL_SAFE);
             }
         }
         catch (Exception e){
@@ -117,21 +117,21 @@ public class MainActivity extends FlutterActivity {
                 gen.init(256);
                 SecretKey key = gen.generateKey();
                 binary = key.getEncoded();
-                Log.d("Original Master Key :",Base64.encodeToString(binary,Base64.DEFAULT));
+                Log.d("Original Master Key :",Base64.encodeToString(binary,Base64.URL_SAFE));
 
                 byte[] salt = new byte[128];
                 SecureRandom secureRandom = new SecureRandom();
                 secureRandom.nextBytes(salt);
 
-                byte[] encKey = android.util.Base64.decode(getEncryptionKey(password,android.util.Base64.encodeToString(salt, Base64.DEFAULT)), Base64.DEFAULT);
+                byte[] encKey = android.util.Base64.decode(getEncryptionKey(password,android.util.Base64.encodeToString(salt, Base64.URL_SAFE)), Base64.URL_SAFE);
 
                 Cipher cipher = Cipher.getInstance("AES");
                 SecretKeySpec encKeySpec = new SecretKeySpec(encKey,"AES");
                 cipher.init(Cipher.ENCRYPT_MODE,encKeySpec);
                 byte[] cipherText = cipher.doFinal(binary);
 
-                result[0] =  android.util.Base64.encodeToString(cipherText, Base64.DEFAULT);
-                result[1] = android.util.Base64.encodeToString(salt,Base64.DEFAULT);
+                result[0] =  android.util.Base64.encodeToString(cipherText, Base64.URL_SAFE);
+                result[1] = android.util.Base64.encodeToString(salt,Base64.URL_SAFE);
             }
             else{
                 throw new UnsupportedOperationException();
@@ -149,10 +149,10 @@ public class MainActivity extends FlutterActivity {
         try{
             if(android.os.Build.VERSION.SDK_INT >= 8) {
                 Cipher cipher = Cipher.getInstance("AES");
-                SecretKeySpec encKeySpec = new SecretKeySpec(android.util.Base64.decode(encKey, Base64.DEFAULT), "AES");
+                SecretKeySpec encKeySpec = new SecretKeySpec(android.util.Base64.decode(encKey, Base64.URL_SAFE), "AES");
                 cipher.init(Cipher.ENCRYPT_MODE, encKeySpec);
                 byte[] encryptedBytes = cipher.doFinal(token.getBytes());
-                encrypted = android.util.Base64.encodeToString(encryptedBytes, Base64.DEFAULT);
+                encrypted = android.util.Base64.encodeToString(encryptedBytes, Base64.URL_SAFE);
             }
         }
         catch(Exception e){
@@ -166,9 +166,9 @@ public class MainActivity extends FlutterActivity {
         try{
             if(android.os.Build.VERSION.SDK_INT >= 8) {
                 Cipher cipher = Cipher.getInstance("AES");
-                SecretKeySpec secretKeySpec = new SecretKeySpec(android.util.Base64.decode(encKey, Base64.DEFAULT), "AES");
+                SecretKeySpec secretKeySpec = new SecretKeySpec(android.util.Base64.decode(encKey, Base64.URL_SAFE), "AES");
                 cipher.init(Cipher.DECRYPT_MODE, secretKeySpec);
-                byte[] decryptedBytes = cipher.doFinal(android.util.Base64.decode(token, Base64.DEFAULT));
+                byte[] decryptedBytes = cipher.doFinal(android.util.Base64.decode(token, Base64.URL_SAFE));
                 decrypted = new String(decryptedBytes);
             }
         }

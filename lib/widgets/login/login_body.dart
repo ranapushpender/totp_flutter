@@ -78,9 +78,9 @@ class _LoginBodyState extends State<LoginBody> {
             "salt": credentials[1],
           });
           var encryptedMasterKeyDocument = await Firestore.instance.collection("/users").document(uid).collection("keys").document("masterKey").get();
-          var clientDerivedKey = await platform.invokeMethod('getEncryptionKey',{"password":"123456".toString(),"salt":credentials[1].toString()});
+          var clientDerivedKey = await platform.invokeMethod('getEncryptionKey',{"password":"123456".toString(),"salt":encryptedMasterKeyDocument["salt"].toString()});
           print(clientDerivedKey);
-          var rckey = await platform.invokeMethod('decryptKey',{"encKey":clientDerivedKey,"masterKey":credentials[0]});
+          var rckey = await platform.invokeMethod('decryptKey',{"encKey":clientDerivedKey,"masterKey":encryptedMasterKeyDocument["masterKey"]});
           print(rckey);
           return;
           

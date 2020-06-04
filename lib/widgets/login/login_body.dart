@@ -51,54 +51,46 @@ class _LoginBodyState extends State<LoginBody> {
         password: "123456",
       );
       var currentUser = await FirebaseAuth.instance.currentUser();
-      if(currentUser.isEmailVerified)
-      {
-        
+      if (currentUser.isEmailVerified) {
         var uid = currentUser.uid;
-        var document = await Firestore.instance.collection("/users").document(uid).get();
+        var document =
+            await Firestore.instance.collection("/users").document(uid).get();
 
-        if (!document.exists){
+        if (!document.exists) {
           const platform = MethodChannel("com.flutter.epic/epic");
           print("Generating master key");
-          List<dynamic> credentials = await platform.invokeMethod(
-              'generateEncryptionKey',
-              {"password": "123456"},
-            );
-          print(credentials);
-         /* List<StringBuffer> credentials = await EncryptionHelper.createMasterKey(
+          List<dynamic> credentials = await EncryptionHelper.createMasterKey(
             new StringBuffer("123456"),
           );
-          
-          */
-          await Firestore.instance.collection("/users").document(uid).setData({
-            "uid":uid
-          });
-          await Firestore.instance.collection("/users").document(uid).collection("keys").document("masterKey").setData({
-            "masterKey": credentials[0],
-            "salt": credentials[1],
-          });
-          var encryptedMasterKeyDocument = await Firestore.instance.collection("/users").document(uid).collection("keys").document("masterKey").get();
-          var clientDerivedKey = await platform.invokeMethod('getEncryptionKey',{"password":"123456".toString(),"salt":encryptedMasterKeyDocument["salt"].toString()});
-          print(clientDerivedKey);
-          var rckey = await platform.invokeMethod('decryptKey',{"encKey":clientDerivedKey,"masterKey":encryptedMasterKeyDocument["masterKey"]});
-          print(rckey);
-          return;
-          
-        }
-        else{
+          print(credentials);
+          await Firestore.instance
+              .collection("/users")
+              .document(uid)
+              .setData({"uid": uid});
+          await Firestore.instance
+              .collection("/users")
+              .document(uid)
+              .collection("keys")
+              .document("masterKey")
+              .setData(
+            {
+              "masterKey": credentials[0],
+              "salt": credentials[1],
+            },
+          );
+        } else {
           print("No need for master key");
         }
-        StringBuffer tempPassword = new StringBuffer("123456");
-        await EncryptionHelper.createHelper(tempPassword);
-        tempPassword.clear();
-        passwordController.clear();
         //Navigator.pushReplacementNamed(context, "/tokens");
-      }
-      else{
+      } else {
         currentUser.sendEmailVerification();
         print("Email Verification sent");
       }
-      
+      print("Testing****");
+      await EncryptionHelper.createHelper("123456");
+      var encTestToken =await (await EncryptionHelper.createHelper("123456")).encrypt("I am pushpe");
+      print(encTestToken);
+      print(await (await EncryptionHelper.createHelper("123456")).decrypt(encTestToken));
       //Navigator.pushReplacementNamed(context, "/tokens");
     } catch (e) {
       print(

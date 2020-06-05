@@ -9,7 +9,7 @@ class EncryptionHelper {
   static EncryptionHelper helper;
   final platform = MethodChannel("com.flutter.epic/epic");
 
-  static Future<EncryptionHelper> createHelper(String password) async {
+  static Future<EncryptionHelper> createHelper([String password]) async {
     if (helper == null) {
       helper = new EncryptionHelper();
       await helper.init(password);

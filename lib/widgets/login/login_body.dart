@@ -57,7 +57,7 @@ class _LoginBodyState extends State<LoginBody> {
             await Firestore.instance.collection("/users").document(uid).get();
 
         if (!document.exists) {
-          const platform = MethodChannel("com.flutter.epic/epic");
+          
           print("Generating master key");
           List<dynamic> credentials = await EncryptionHelper.createMasterKey(
             new StringBuffer("123456"),
@@ -80,18 +80,21 @@ class _LoginBodyState extends State<LoginBody> {
           );
         } else {
           print("No need for master key");
+          await EncryptionHelper.createHelper("123456");
+          Navigator.pushReplacementNamed(context, "/tokens");
         }
-        //Navigator.pushReplacementNamed(context, "/tokens");
+        //Navigator.pushReplacementNamed(context,"/tokens");//Navigator.pushReplacementNamed(context, "/tokens");
       } else {
         currentUser.sendEmailVerification();
         print("Email Verification sent");
       }
-      print("Testing****");
+      /*print("Testing****");
       await EncryptionHelper.createHelper("123456");
-      var encTestToken =await (await EncryptionHelper.createHelper("123456")).encrypt("I am pushpe");
+      var encTestToken =await (await EncryptionHelper.createHelper()).encrypt("I am pushpe");
       print(encTestToken);
-      print(await (await EncryptionHelper.createHelper("123456")).decrypt(encTestToken));
-      //Navigator.pushReplacementNamed(context, "/tokens");
+      print(await (await EncryptionHelper.createHelper()).decrypt(encTestToken));*/
+      
+      
     } catch (e) {
       print(
           "Invalid username or password or the user exists: ${e.toString()} ===");

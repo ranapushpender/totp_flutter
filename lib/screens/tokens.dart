@@ -1,9 +1,12 @@
 import "package:flutter/material.dart";
 import "../widgets/tokens/token_item.dart";
 import "../widgets/tokens/add_bottom_sheet.dart";
+import "../widgets/tokens/edit_bottom_sheet.dart";
 import "../models/Token.dart";
 import 'package:firebase_auth/firebase_auth.dart';
 import "package:cloud_firestore/cloud_firestore.dart";
+import "../encryption/otp.dart";
+
 // ***REMOVED***
 class Tokens extends StatefulWidget {
   Tokens({Key key}) : super(key: key);
@@ -14,6 +17,7 @@ class Tokens extends StatefulWidget {
 
 class _TokensState extends State<Tokens> {
   List<Token> tokens = [];
+  List<AppOTP> tokenStrings = [];
   Firestore db;
   FirebaseUser user;
 
@@ -23,7 +27,7 @@ class _TokensState extends State<Tokens> {
     super.initState();
   }
 
-  void initTokens()  {
+  void initTokens() {
     getTokens();
   }
 
@@ -31,19 +35,29 @@ class _TokensState extends State<Tokens> {
     //
     db = Firestore.instance;
     user = await FirebaseAuth.instance.currentUser();
-    tokens = (await db.collection("/users").document(user.uid).collection("tokens").getDocuments()).documents.map((e){
-      return Token(id: e["id"],email: e["email"],token: e["token"],website: e["website"]);
-    }).toList();
-    setState((){
+    var tokenDocuments = (await db
+            .collection("/users")
+            .document(user.uid)
+            .collection("tokens")
+            .getDocuments())
+        .documents;
+
+    tokens = await Future.wait(tokenDocuments.map((e) async {
+      AppOTP otp = AppOTP(otpString: new StringBuffer(e["otpString"]));
+      //    print("OTP : ${otp.otpString}");
+//      var otpTest = (await otp.decryptedString).toString();
+      var decryptedTest = await otp.decryptedString;
+      //return Token();
+      return Token.createFromOTPString(otpString: await otp.decryptedString,documentID: e.documentID);
+    }));
+
+    setState(() {
       tokens = tokens;
     });
     print("TOkens found : $tokens");
-
   }
 
-  void addTokenTest() async {
-
-  }
+  void addTokenTest() async {}
 
   void showAddSheet(BuildContext context) {
     showModalBottomSheet(
@@ -56,16 +70,58 @@ class _TokensState extends State<Tokens> {
         });
   }
 
-  void addToken(Token token) async {
-    try{
-      db.collection("/users").document(user.uid).collection("tokens").add(await token.toMap());
-      setState((){
-        tokens.add(token);
-      });
-    }
-    catch(e){
+  void showEditDialog(int index) {
+    print("Index to edit : $index");
+    showModalBottomSheet(
+      context: context,
+      builder: (_) {
+        return EditBottomSheet(
+            deleteToken: this.deleteToken, index: index, token: tokens[index]);
+      },
+    );
+  }
+
+  void deleteToken(int index) async {
+    print("Deleting${tokens[index].documentID}");
+    await db.collection("/users").document(user.uid).collection("tokens").document(tokens[index].documentID).delete();
+    refresh();
+  }
+
+  Future<void> addToken(AppOTP token) async {
+    Token.createFromOTPString(otpString: await token.decryptedString);
+    try {
+      db.collection("/users").document(user.uid).collection("tokens").add(
+            token.toMap(),
+          );
+      Token tokenToAdd = Token.createFromOTPString(
+        otpString: await token.decryptedString,
+      );
+      refresh();
+    } catch (e) {
       print("Error while adding : $e");
     }
+  }
+
+  Future<void> refresh() async {
+    var tokenDocuments = (await db
+            .collection("/users")
+            .document(user.uid)
+            .collection("tokens")
+            .getDocuments())
+        .documents;
+
+    tokens = await Future.wait(tokenDocuments.map((e) async {
+      AppOTP otp = AppOTP(otpString: new StringBuffer(e["otpString"]));
+      //    print("OTP : ${otp.otpString}");
+//      var otpTest = (await otp.decryptedString).toString();
+      var decryptedTest = await otp.decryptedString;
+      //return Token();
+      return Token.createFromOTPString(otpString: await otp.decryptedString);
+    }));
+
+    setState(() {
+      tokens = tokens;
+    });
   }
 
   @override
@@ -147,7 +203,8 @@ class _TokensState extends State<Tokens> {
                           )
                         : TokenItem(
                             token: tokens[index - 1],
-                          );
+                            showEditDialog: this.showEditDialog,
+                            index: index - 1);
                   },
                   itemCount: tokens.length + 1,
                 ),
@@ -221,8 +278,8 @@ class _TokensState extends State<Tokens> {
                                 color: Color.fromRGBO(0, 0, 0, 0.20))
                           ],
                         ),
-                        margin:
-                            EdgeInsets.only(left: 20,right: 20, bottom: 10,top:5),
+                        margin: EdgeInsets.only(
+                            left: 20, right: 20, bottom: 10, top: 5),
                         padding: EdgeInsets.symmetric(horizontal: 0),
                         height: 45,
                         child: ClipRRect(

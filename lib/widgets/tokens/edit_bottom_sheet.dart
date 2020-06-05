@@ -3,17 +3,18 @@ import 'package:barcode_scan/barcode_scan.dart';
 import "../../models/Token.dart";
 import "../../encryption/otp.dart";
 
-class AddBottomSheet extends StatefulWidget {
-  final addToken;
-  final tokenTest;
+class EditBottomSheet extends StatefulWidget {
+  final deleteToken;
+  int index;
+  final Token token;
 
-  AddBottomSheet({this.addToken, this.tokenTest});
+  EditBottomSheet({this.deleteToken,this.index,this.token});
 
   @override
-  _AddBottomSheetState createState() => _AddBottomSheetState();
+  _EditBottomSheetState createState() => _EditBottomSheetState();
 }
 
-class _AddBottomSheetState extends State<AddBottomSheet> {
+class _EditBottomSheetState extends State<EditBottomSheet> {
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -36,7 +37,7 @@ class _AddBottomSheetState extends State<AddBottomSheet> {
             height: 20,
           ),
           TextField(
-            decoration: InputDecoration(labelText: "Enter token or use camera"),
+            decoration: InputDecoration(labelText: "Enter token"),
           ),
           SizedBox(
             height: 20,
@@ -58,26 +59,21 @@ class _AddBottomSheetState extends State<AddBottomSheet> {
             children: <Widget>[
               FlatButton(
                 child: Text(
-                  "USE CAMERA",
-                  style: TextStyle(color: Colors.blue),
+                  "Delete",
+                  style: TextStyle(color: Colors.red),
                 ),
-                onPressed: () async {
-                  var result = await BarcodeScanner.scan();
-                  print(result.rawContent.toString());
-                  var otp = AppOTP(otpString: new StringBuffer(result.rawContent.toString()));
-                  await otp.encryptString();
-                  await widget.addToken(otp);                  
-                  return;
+                onPressed: (){
+                  widget.deleteToken(widget.index);
                 },
               ),
               RaisedButton(
                 elevation: 0,
                 color: Color.fromRGBO(55, 163, 255, 1),
                 onPressed: () {
-                  this.widget.tokenTest();
+                  
                 },
                 child: Text(
-                  "SUBMIT",
+                  "UPDATE",
                   style: TextStyle(
                     color: Colors.white,
                   ),

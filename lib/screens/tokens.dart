@@ -2,8 +2,9 @@ import "package:flutter/material.dart";
 import "../widgets/tokens/token_item.dart";
 import "../widgets/tokens/add_bottom_sheet.dart";
 import "../models/Token.dart";
-import "../db/TokenHelper.dart";
-
+import 'package:firebase_auth/firebase_auth.dart';
+import "package:cloud_firestore/cloud_firestore.dart";
+// ***REMOVED***
 class Tokens extends StatefulWidget {
   Tokens({Key key}) : super(key: key);
 
@@ -13,6 +14,8 @@ class Tokens extends StatefulWidget {
 
 class _TokensState extends State<Tokens> {
   List<Token> tokens = [];
+  Firestore db;
+  FirebaseUser user;
 
   @override
   void initState() {
@@ -25,31 +28,21 @@ class _TokensState extends State<Tokens> {
   }
 
   void getTokens() async {
-    await TokenHelper.init();
-    tokens = await TokenHelper.getTokens();
-    setState(() {
-      tokens =tokens;
+    //
+    db = Firestore.instance;
+    user = await FirebaseAuth.instance.currentUser();
+    tokens = (await db.collection("/users").document(user.uid).collection("tokens").getDocuments()).documents.map((e){
+      return Token(id: e["id"],email: e["email"],token: e["token"],website: e["website"]);
+    }).toList();
+    setState((){
+      tokens = tokens;
     });
+    print("TOkens found : $tokens");
 
   }
 
   void addTokenTest() async {
-    Token token = Token(
-        email: "dsds",
-        id: 24342,
-        token: "JBSWY3DPEHPK3PXP",
-        website: "Alibaba.com");
-    await TokenHelper.insertToken(token);
-    tokens = await TokenHelper.getTokens();
-    setState(() {
-      tokens = tokens;
-    });
-    /*var tokenHelper = TokenHelper.init();
-    await (tokenHelper.insertToken(token));
-    var localTokens = (await tokenHelper.getTokens()) as List<Token>;
-    setState(() {
-      tokens = localTokens;
-    });*/
+
   }
 
   void showAddSheet(BuildContext context) {
@@ -64,11 +57,15 @@ class _TokensState extends State<Tokens> {
   }
 
   void addToken(Token token) async {
-    await TokenHelper.insertToken(token);
-    tokens = await TokenHelper.getTokens();
-    setState(() {
-      tokens = tokens;
-    });
+    try{
+      db.collection("/users").document(user.uid).collection("tokens").add(await token.toMap());
+      setState((){
+        tokens.add(token);
+      });
+    }
+    catch(e){
+      print("Error while adding : $e");
+    }
   }
 
   @override

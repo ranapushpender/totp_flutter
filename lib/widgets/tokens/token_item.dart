@@ -16,48 +16,48 @@ class _TokenItemState extends State<TokenItem> {
   @override
   void initState() {
     generatedToken = "000000";
+    generateCode();
     super.initState();
   }
 
-  void generateCode() {
+  void generateCode() async {
+    var tk = await widget.token.getToken;
+    print("Token Item : $tk");
     setState(() {
       var cdate = DateTime.now();
-      try{
-      generatedToken = OTP
-          .generateTOTPCodeString(
-            widget.token.token,
-            cdate.toUtc().millisecondsSinceEpoch,
-            interval: 30,
-            length: 6,
-            algorithm: Algorithm.SHA1,
-          )
-          .toString();
-        }
-        catch(StackTrace){
-          generatedToken = "INVALID";
-        }
+      try {
+        generatedToken = OTP
+            .generateTOTPCodeString(
+              tk,
+              cdate.toUtc().millisecondsSinceEpoch,
+              interval: 30,
+              length: 6,
+              algorithm: Algorithm.SHA1,
+            )
+            .toString();
+      } catch (StackTrace) {
+        generatedToken = "INVALID";
+      }
     });
     int toAdd = 0;
     var cdate = DateTime.now();
-    if(cdate.second>=30)
-    {
-      toAdd = 60-cdate.second;
-    }
-    else{
+    if (cdate.second >= 30) {
+      toAdd = 60 - cdate.second;
+    } else {
       toAdd = 30 - cdate.second;
     }
-    Future.delayed(Duration(seconds: toAdd) , () {
+    Future.delayed(Duration(seconds: toAdd), () {
       generateCode();
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    generateCode();
+    
     return Container(
       child: Container(
         margin: EdgeInsets.only(bottom: 18),
-        padding: EdgeInsets.only(left: 15,right: 0,top: 18,bottom: 18),
+        padding: EdgeInsets.only(left: 15, right: 0, top: 18, bottom: 18),
         decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(10),
@@ -74,7 +74,9 @@ class _TokenItemState extends State<TokenItem> {
               child: CircleAvatar(
                 backgroundColor: Colors.transparent,
                 child: Text(
-                  widget.token.website == null ? "I" : widget.token.website.substring(0, 1).toUpperCase(),
+                  widget.token.website == null
+                      ? "I"
+                      : widget.token.website.substring(0, 1).toUpperCase(),
                   style: TextStyle(
                       fontWeight: FontWeight.bold,
                       color: Colors.white,
@@ -105,7 +107,9 @@ class _TokenItemState extends State<TokenItem> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     Text(
-                      widget.token.website == null ? "Unavailable" : widget.token.website,
+                      widget.token.website == null
+                          ? "Unavailable"
+                          : widget.token.website,
                       style: TextStyle(
                         fontSize: 18,
                         color: Color.fromRGBO(88, 88, 88, 1),

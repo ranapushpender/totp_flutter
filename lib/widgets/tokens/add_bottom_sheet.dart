@@ -77,15 +77,16 @@ class _AddBottomSheetState extends State<AddBottomSheet> {
                         credentials[i].split("=")[1];
                   }
 
-                  var newToken = Token(
-                      email: username == null ? "Not present" : username,
-                      id: DateTime.now().millisecondsSinceEpoch,
-                      token: tokenInfo["secret"] == null
-                          ? "Invalid"
-                          : tokenInfo["secret"],
-                      website: tokenInfo["issuer"] == null ? "Website not present" : tokenInfo["issuer"]);
-                  ///print(
-                     // "Tokens are == : ${newToken.email}  ${newToken.token}  ${newToken.website} ===");
+                  var newToken = await Token.createEncryptedToken(
+                    id: DateTime.now().millisecondsSinceEpoch,
+                    email: username == null ? "Not present" : username,
+                    website: tokenInfo["issuer"] == null
+                        ? "Website not present"
+                        : tokenInfo["issuer"],
+                    token: tokenInfo["secret"] == null
+                        ? "Invalid"
+                        : tokenInfo["secret"],
+                  );
                   widget.addToken(newToken);
                 },
               ),

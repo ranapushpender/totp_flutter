@@ -24,6 +24,18 @@ class _LoginBodyState extends State<LoginBody> {
 
   final passwordController = TextEditingController();
 
+  @override
+  void didChangeDependencies(){
+    checkLogin();
+  }
+
+  void checkLogin() async{
+    if((await FirebaseAuth.instance.currentUser())!=null){
+     // await EncryptionHelper.createHelper("123456");
+     // Navigator.pushReplacementNamed(context,"/tokens");
+    }
+  }
+
   Future<void> getResponse() async {}
 
   void register() async {

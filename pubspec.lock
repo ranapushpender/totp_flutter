@@ -30,7 +30,7 @@ packages:
     source: hosted
     version: "3.0.1"
   base32:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: base32
       url: "https://pub.dartlang.org"

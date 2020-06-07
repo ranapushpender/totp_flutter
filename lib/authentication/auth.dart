@@ -3,7 +3,7 @@ import 'package:totp_app/encryption/encryption.dart';
 import "../models/User.dart";
 import "../db/Database.dart";
 import "./device_storage.dart";
-
+import 'package:biometric_storage/biometric_storage.dart';
 class Authentication {
   final FirebaseAuth auth = FirebaseAuth.instance;
 
@@ -25,6 +25,8 @@ class Authentication {
       }
       var passwordFromStorage =
           await DeviceStorage().saveEncryptionKey(password);
+       print("saving password");
+       //(await BiometricStorage().getStorage("totp_enc_password")).write(password.toString());
       await EncryptionHelper.createHelper(password.toString());
       return true;
     } catch (e) {
@@ -73,12 +75,15 @@ class Authentication {
     FirebaseUser user = await auth.currentUser();
     if (user != null && user.isEmailVerified) {
       var password = StringBuffer(await DeviceStorage().getEncryptionKey());
+      //var password = StringBuffer(await ((await BiometricStorage().getStorage("totp_enc_password")).read()));
+      print("password retrieved : $password");
       if (password == null || password.isEmpty) {
         auth.signOut();
         return false;
       } else {
         print("Password is : $password");
         await EncryptionHelper.createHelper(password.toString());
+        password.clear();
         return true;
       }
     }

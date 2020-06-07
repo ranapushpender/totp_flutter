@@ -27,7 +27,7 @@ import io.flutter.plugins.GeneratedPluginRegistrant;
 public class MainActivity extends FlutterActivity {
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
-        //GeneratedPluginRegistrant.registerWith(getFlutterEngine());
+        //\GeneratedPluginRegistrant.registerWith(getFlutterEngine());
         new MethodChannel(getFlutterEngine().getDartExecutor().getBinaryMessenger(),"com.flutter.epic/epic").setMethodCallHandler(
             new MethodCallHandler(){
                 @Override

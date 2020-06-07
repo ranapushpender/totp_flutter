@@ -61,17 +61,6 @@ class EncryptionHelper {
       result[0],
       result[1],
     ];
-    /*const platform = MethodChannel("com.flutter.epic/epic");
-    List<dynamic> result = await platform.invokeMethod('generateEncryptionKey',{"username":"pushpender661@gmail.com","password":"palakpaneer"});
-    print("Encrypted master key : ${result[0]}\nSalt : ${result[1]}");
-    String encryptionKey = await platform.invokeMethod('getEncryptionKey',{"password":"palakpaneer","salt":result[1]});
-    print("PBKDF Encryption key : $encryptionKey");
-    String masterKey = await platform.invokeMethod('decryptKey',{"encKey":encryptionKey,"masterKey":result[0]});
-    print("Decrypted master key :  $masterKey");
-    String encryptedToken = await platform.invokeMethod("encrypt",{"token":"HelloTest I am","key":masterKey});
-    String decryptedToken = await platform.invokeMethod("decrypt",{"token":encryptedToken,"key":masterKey});
-    print("Encrypted Token : $encryptedToken");
-    print("Decrypted Token : $decryptedToken");*/
   }
 
   Future<String> encrypt(String token) async {

@@ -1,6 +1,6 @@
 import "package:flutter/material.dart";
 import 'package:otp/otp.dart';
-import 'package:totp_app/encryption/otp.dart';
+import 'package:totp_app/otp/otp.dart';
 import "../encryption/encryption.dart";
 import "../db/Database.dart";
 

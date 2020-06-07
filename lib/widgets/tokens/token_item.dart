@@ -1,7 +1,7 @@
 import "package:flutter/material.dart";
 import "../../models/Token.dart";
 import "package:otp/otp.dart";
-import "../../encryption/otp_generator.dart";
+import "../../otp/otp_generator.dart";
 
 class TokenItem extends StatefulWidget {
   Token token;

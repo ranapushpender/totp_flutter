@@ -2,9 +2,16 @@ import "package:firebase_auth/firebase_auth.dart";
 import 'package:totp_app/encryption/encryption.dart';
 import "../models/User.dart";
 import "../db/Database.dart";
+import "./device_storage.dart";
 
 class Authentication {
   final FirebaseAuth auth = FirebaseAuth.instance;
+
+  Future<bool> logout() async {
+    await DeviceStorage().deleteEncryptionKey();
+    auth.signOut();
+    return true;
+  }
 
   Future<bool> login(StringBuffer username, StringBuffer password) async {
     try {
@@ -16,7 +23,9 @@ class Authentication {
       if (user.isEmailVerified) {
         await Database().initializeUserCollection(user.uid);
       }
-      await EncryptionHelper.createHelper("123456");
+      var passwordFromStorage =
+          await DeviceStorage().saveEncryptionKey(password);
+      await EncryptionHelper.createHelper(password.toString());
       return true;
     } catch (e) {
       print("Error Incorrect values or $e");
@@ -25,6 +34,7 @@ class Authentication {
       username.clear();
       password.clear();
     }
+    return false;
   }
 
   Future<bool> register(StringBuffer username, StringBuffer password) async {
@@ -57,5 +67,21 @@ class Authentication {
       print("Already verified or user null");
       return false;
     }
+  }
+
+  Future<bool> isLoggedIn() async {
+    FirebaseUser user = await auth.currentUser();
+    if (user != null && user.isEmailVerified) {
+      var password = StringBuffer(await DeviceStorage().getEncryptionKey());
+      if (password == null || password.isEmpty) {
+        auth.signOut();
+        return false;
+      } else {
+        print("Password is : $password");
+        await EncryptionHelper.createHelper(password.toString());
+        return true;
+      }
+    }
+    return false;
   }
 }

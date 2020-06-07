@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:totp_app/authentication/auth.dart';
-import 'package:totp_app/encryption/otp.dart';
+import 'package:totp_app/otp/otp.dart';
 import 'package:totp_app/models/Token.dart';
 import "../encryption/encryption.dart";
 import "../models/User.dart";
@@ -37,14 +37,18 @@ class Database {
     return true;
   }
 
-  Future<bool> updateToken(String documentID,AppOTP token) async {
+  Future<bool> updateToken(String documentID, AppOTP token) async {
     await token.encryptString();
     var user = await FirebaseAuth.instance.currentUser();
-    try{
-      await db.collection("/users").document(user.uid).collection("tokens").document(documentID).updateData(token.toMap());
+    try {
+      await db
+          .collection("/users")
+          .document(user.uid)
+          .collection("tokens")
+          .document(documentID)
+          .updateData(token.toMap());
       return true;
-    }
-    catch(e){
+    } catch (e) {
       print("Error while updating $e");
       return false;
     }
@@ -52,11 +56,15 @@ class Database {
 
   Future<bool> deleteDocument(String documentID) async {
     var user = await FirebaseAuth.instance.currentUser();
-    try{
-      await db.collection("/users").document(user.uid).collection("tokens").document(documentID).delete();
+    try {
+      await db
+          .collection("/users")
+          .document(user.uid)
+          .collection("tokens")
+          .document(documentID)
+          .delete();
       return true;
-    }
-    catch(e){
+    } catch (e) {
       print("Error while deleting : $e");
       return false;
     }

@@ -1,7 +1,7 @@
 import "package:flutter/material.dart";
 import 'package:barcode_scan/barcode_scan.dart';
 import "../../models/Token.dart";
-import "../../encryption/otp.dart";
+import "../../otp/otp.dart";
 
 class AddBottomSheet extends StatefulWidget {
   final addToken;

@@ -1,4 +1,5 @@
 import "package:flutter/material.dart";
+import 'package:totp_app/authentication/auth.dart';
 import 'package:totp_app/db/Database.dart';
 import "../widgets/tokens/token_item.dart";
 import "../widgets/tokens/add_bottom_sheet.dart";
@@ -6,26 +7,25 @@ import "../widgets/tokens/edit_bottom_sheet.dart";
 import "../models/Token.dart";
 import 'package:firebase_auth/firebase_auth.dart';
 import "package:cloud_firestore/cloud_firestore.dart";
-import "../encryption/otp.dart";
+import "../otp/otp.dart";
 import "../encryption/encryption.dart";
 
 // ***REMOVED***
-class Tokens extends StatefulWidget {
-  Tokens({Key key}) : super(key: key);
+class Panel extends StatefulWidget {
+  Panel({Key key}) : super(key: key);
 
   @override
-  _TokensState createState() => _TokensState();
+  _PanelState createState() => _PanelState();
 }
 
-class _TokensState extends State<Tokens> {
+class _PanelState extends State<Panel> {
   List<Token> tokens = [];
-  List<AppOTP> tokenStrings = [];
-  Firestore db;
-  FirebaseUser user;
+  int currentIndex;
   final database = Database();
 
   @override
   void initState() {
+    currentIndex = 0;
     initTokens();
     super.initState();
   }
@@ -62,7 +62,9 @@ class _TokensState extends State<Tokens> {
       context: context,
       builder: (_) {
         return EditBottomSheet(
-            deleteToken: this.deleteToken,updateToken: this.updateToken, token: tokens[index]);
+            deleteToken: this.deleteToken,
+            updateToken: this.updateToken,
+            token: tokens[index]);
       },
     );
   }
@@ -106,49 +108,51 @@ class _TokensState extends State<Tokens> {
             backgroundColor: Colors.white,
             icon: Icon(
               Icons.list,
-              color: Colors.blue,
+              color: Colors.grey,
             ),
             title: Text(
-              "Tokens",
-              style: TextStyle(color: Colors.blue),
+              "OTP",
+              style: TextStyle(color: Colors.grey),
             ),
           ),
           BottomNavigationBarItem(
             backgroundColor: Colors.white,
             icon: Icon(
               Icons.backup,
-              color: Colors.blue,
+              color: Colors.grey,
             ),
             title: Text(
-              "Backup",
-              style: TextStyle(color: Colors.blue),
+              "Export",
+              style: TextStyle(color: Colors.grey),
             ),
           ),
           BottomNavigationBarItem(
             backgroundColor: Colors.white,
             icon: Icon(
-              Icons.feedback,
-              color: Colors.blue,
+              Icons.content_copy,
+              color: Colors.grey,
             ),
             title: Text(
               "Feedback",
-              style: TextStyle(color: Colors.blue),
+              style: TextStyle(color: Colors.grey),
             ),
           ),
           BottomNavigationBarItem(
             backgroundColor: Colors.white,
             icon: Icon(
               Icons.person,
-              color: Colors.blue,
+              color: Colors.grey,
             ),
             title: Text(
               "Support",
-              style: TextStyle(color: Colors.blue),
+              style: TextStyle(color: Colors.grey),
             ),
           ),
         ],
-        currentIndex: 1,
-        showUnselectedLabels: true,
+        currentIndex: 0,
+        unselectedItemColor: Colors.grey,
+        showUnselectedLabels: false,
+        selectedItemColor: Colors.blue,
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
@@ -234,7 +238,18 @@ class _TokensState extends State<Tokens> {
                                 style: TextStyle(
                                     color: Colors.white, fontSize: 14),
                               ),
-                              onPressed: () {},
+                              onPressed: () async {
+                                try{
+                                  await Authentication().logout();
+                                }
+                                catch(e){
+
+                                }
+                                finally{
+                                  Navigator.pushReplacementNamed(context, "/");
+                                }
+                                
+                              },
                             ),
                           ],
                         ),

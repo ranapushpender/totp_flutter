@@ -63,7 +63,7 @@ class _EditBottomSheetState extends State<EditBottomSheet> {
                   style: TextStyle(color: Colors.red),
                 ),
                 onPressed: (){
-                  widget.deleteToken(widget.index);
+                  widget.deleteToken(widget.token);
                 },
               ),
               RaisedButton(

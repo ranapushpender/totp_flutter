@@ -65,7 +65,6 @@ class _AddBottomSheetState extends State<AddBottomSheet> {
                   var result = await BarcodeScanner.scan();
                   print(result.rawContent.toString());
                   var otp = AppOTP(otpString: new StringBuffer(result.rawContent.toString()));
-                  await otp.encryptString();
                   await widget.addToken(otp);                  
                   return;
                 },

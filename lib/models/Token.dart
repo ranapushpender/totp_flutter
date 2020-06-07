@@ -16,10 +16,10 @@ class Token {
   int counter;
   String documentID;
 
-  static Token createFromOTPString({@required StringBuffer otpString,String documentID}) {
-    
+  static Token createFromOTPString(
+      {@required StringBuffer otpString, String documentID}) {
     Token token = Token();
-    if(documentID!=null){
+    if (documentID != null) {
       token.documentID = documentID;
     }
     print(otpString);
@@ -55,9 +55,9 @@ class Token {
           token.counter = int.parse(details[i].split("=")[1]);
           break;
       }
-      
     }
-    print("Token added ${token.issuer} ${token.algorithm} ${token.counter} ${token.username} ${token.label} ${token.period} ${token.secret}");
+    print(
+        "Token added ${token.issuer} ${token.algorithm} ${token.counter} ${token.username} ${token.label} ${token.period} ${token.secret}");
     return token;
   }
 
@@ -89,4 +89,26 @@ class Token {
         return ("INVALID");
     }
   }
+  StringBuffer get tokenString{
+    StringBuffer otpString = StringBuffer("otpauth://");
+    otpString.write(this.tokenType);
+    otpString.write(this.label+"?");
+    if(secret!=null){
+      otpString.write("secret=${this.secret}");
+    }
+    if(this.issuer!=null){
+      otpString.write("&issuer=${this.issuer}");
+    }
+    if(this.algorithm!=null){
+      otpString.write("&algorithm=${this.algorithm.toString()}");
+    }
+    if(this.period!=null){
+      otpString.write("&period=${this.period}");
+    }
+    if(this.type == TokenTypes.HOTP && this.counter!=null){
+      otpString.write("&counter=${this.counter}");
+    }
+    return otpString;
+  }
+  
 }

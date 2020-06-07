@@ -1,6 +1,6 @@
 import "package:flutter/material.dart";
 import "./screens/login.dart";
-import "./screens/tokens.dart";
+import "./screens/panel.dart";
 import 'package:flutter_statusbarcolor/flutter_statusbarcolor.dart';
 import "./db/TokenHelper.dart";
 
@@ -16,7 +16,7 @@ class TotpApp extends StatelessWidget {
     return MaterialApp(
       theme: ThemeData(primarySwatch: Colors.blue),
       home: Home(),
-      routes: {"/tokens": (context) => Tokens()},
+      routes: {"/home": (context) => Panel()},
     );
   }
 }

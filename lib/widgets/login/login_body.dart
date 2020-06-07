@@ -38,9 +38,8 @@ class _LoginBodyState extends State<LoginBody> {
   }
 
   void checkLogin() async {
-    if ((await FirebaseAuth.instance.currentUser()) != null) {
-      // await EncryptionHelper.createHelper("123456");
-      // Navigator.pushReplacementNamed(context,"/tokens");
+    if(await Authentication().isLoggedIn()){
+      Navigator.pushReplacementNamed(context, "/home");
     }
   }
 
@@ -66,7 +65,7 @@ class _LoginBodyState extends State<LoginBody> {
         StringBuffer(passwordController.text),
       ));
       if (result) {
-        Navigator.of(context).pushReplacementNamed("/tokens");
+        Navigator.of(context).pushReplacementNamed("/home");
       }
     } catch (e) {
       print(

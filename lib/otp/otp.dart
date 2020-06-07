@@ -1,4 +1,4 @@
-import "./encryption.dart";
+import "../encryption/encryption.dart";
 
 class AppOTP{
   EncryptionHelper helper;

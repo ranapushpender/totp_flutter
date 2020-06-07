@@ -36,24 +36,6 @@ class _TokensState extends State<Tokens> {
 
   void getTokens() async {
     await EncryptionHelper.createHelper("123456");
-    //
-    /*db = Firestore.instance;
-    user = await FirebaseAuth.instance.currentUser();
-    var tokenDocuments = (await db
-            .collection("/users")
-            .document(user.uid)
-            .collection("tokens")
-            .getDocuments())
-        .documents;
-
-    tokens = await Future.wait(tokenDocuments.map((e) async {
-      AppOTP otp = AppOTP(otpString: new StringBuffer(e["otpString"]));
-      //    print("OTP : ${otp.otpString}");
-//      var otpTest = (await otp.decryptedString).toString();
-      var decryptedTest = await otp.decryptedString;
-      //return Token();
-      return Token.createFromOTPString(otpString: await otp.decryptedString,documentID: e.documentID);
-    }));*/
     var localTokens = await Database().getAllTokens();
     setState(() {
       tokens = localTokens;
@@ -80,7 +62,7 @@ class _TokensState extends State<Tokens> {
       context: context,
       builder: (_) {
         return EditBottomSheet(
-            deleteToken: this.deleteToken, index: index, token: tokens[index]);
+            deleteToken: this.deleteToken,updateToken: this.updateToken, token: tokens[index]);
       },
     );
   }
@@ -91,16 +73,20 @@ class _TokensState extends State<Tokens> {
   }
 
   Future<void> addToken(AppOTP token) async {
-
     Token tk = Token.createFromOTPString(otpString: token.otpString);
     var result = await tk.save();
-    if(result){
+    if (result) {
       print("TOken saved");
       await refresh();
-    }
-    else{
+    } else {
       print("Token not saved");
     }
+  }
+
+  void updateToken(Token token) async {
+    print("Updating ${token.secret} ${token.documentID}");
+    await token.update();
+    await refresh();
   }
 
   Future<void> refresh() async {

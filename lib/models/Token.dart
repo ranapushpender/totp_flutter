@@ -124,11 +124,19 @@ class Token {
   }
 
   Future<void> delete() async {
-    if(this.documentID!=null){
+    if (this.documentID != null) {
       db.deleteDocument(this.documentID);
-    }
-    else{
+    } else {
       print("Document ID is null");
     }
+  }
+
+  Future<bool> update() async {
+    if (this.documentID != null) {
+      return await db.updateToken(
+        this.documentID,
+        AppOTP(otpString: this.tokenString),
+      );
+    } else {}
   }
 }

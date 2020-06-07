@@ -37,7 +37,18 @@ class Database {
     return true;
   }
 
-  Future<bool> updateToken(Token token) async {}
+  Future<bool> updateToken(String documentID,AppOTP token) async {
+    await token.encryptString();
+    var user = await FirebaseAuth.instance.currentUser();
+    try{
+      await db.collection("/users").document(user.uid).collection("tokens").document(documentID).updateData(token.toMap());
+      return true;
+    }
+    catch(e){
+      print("Error while updating $e");
+      return false;
+    }
+  }
 
   Future<bool> deleteDocument(String documentID) async {
     var user = await FirebaseAuth.instance.currentUser();

@@ -26,6 +26,13 @@ class _LoginBodyState extends State<LoginBody> {
   final passwordController = TextEditingController();
 
   @override
+  void initState() {
+    usernameController.text = "pushpender661@gmail.com";
+    passwordController.text = "123456";
+    super.initState();
+  }
+
+  @override
   void didChangeDependencies() {
     checkLogin();
   }
@@ -42,8 +49,8 @@ class _LoginBodyState extends State<LoginBody> {
   void register() async {
     var auth = Authentication();
     var status = await auth.register(
-      StringBuffer("ranapushpenderindia@gmail.com"),
-      StringBuffer("123456"),
+      StringBuffer(usernameController.text),
+      StringBuffer(passwordController.text),
     );
     if (status) {
       print("Register successful");
@@ -55,8 +62,8 @@ class _LoginBodyState extends State<LoginBody> {
   void login() async {
     try {
       var result = await (Authentication().login(
-        StringBuffer("pushpender661@gmail.com"),
-        StringBuffer("123456"),
+        StringBuffer(usernameController.text),
+        StringBuffer(passwordController.text),
       ));
       if (result) {
         Navigator.of(context).pushReplacementNamed("/tokens");

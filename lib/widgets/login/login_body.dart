@@ -5,6 +5,7 @@ import "./login_buttons.dart";
 import "package:cloud_firestore/cloud_firestore.dart";
 import "../../encryption/encryption.dart";
 import "package:flutter/services.dart";
+import "../../authentication/auth.dart";
 
 class LoginBody extends StatefulWidget {
   Firestore db;
@@ -25,88 +26,41 @@ class _LoginBodyState extends State<LoginBody> {
   final passwordController = TextEditingController();
 
   @override
-  void didChangeDependencies(){
+  void didChangeDependencies() {
     checkLogin();
   }
 
-  void checkLogin() async{
-    if((await FirebaseAuth.instance.currentUser())!=null){
-     // await EncryptionHelper.createHelper("123456");
-     // Navigator.pushReplacementNamed(context,"/tokens");
+  void checkLogin() async {
+    if ((await FirebaseAuth.instance.currentUser()) != null) {
+      // await EncryptionHelper.createHelper("123456");
+      // Navigator.pushReplacementNamed(context,"/tokens");
     }
   }
 
   Future<void> getResponse() async {}
 
   void register() async {
-    try {
-      var result = await FirebaseAuth.instance.createUserWithEmailAndPassword(
-          email: "pushpender661@gmail.com", password: "123456");
-      try {
-        FirebaseUser user = await FirebaseAuth.instance.currentUser();
-        if (!user.isEmailVerified) {
-          user.sendEmailVerification();
-        }
-      } catch (e) {
-        print("Some error has occured");
-      }
-    } catch (e) {
-      print("Error user may already exist");
-      print(e);
+    var auth = Authentication();
+    var status = await auth.register(
+      StringBuffer("ranapushpenderindia@gmail.com"),
+      StringBuffer("123456"),
+    );
+    if (status) {
+      print("Register successful");
+    } else {
+      print("Error already registerd");
     }
   }
 
   void login() async {
     try {
-      var result = await FirebaseAuth.instance.signInWithEmailAndPassword(
-        email: "pushpender661@gmail.com",
-        password: "123456",
-      );
-      var currentUser = await FirebaseAuth.instance.currentUser();
-      if (currentUser.isEmailVerified) {
-        var uid = currentUser.uid;
-        var document =
-            await Firestore.instance.collection("/users").document(uid).get();
-
-        if (!document.exists) {
-          
-          print("Generating master key");
-          List<dynamic> credentials = await EncryptionHelper.createMasterKey(
-            new StringBuffer("123456"),
-          );
-          print(credentials);
-          await Firestore.instance
-              .collection("/users")
-              .document(uid)
-              .setData({"uid": uid});
-          await Firestore.instance
-              .collection("/users")
-              .document(uid)
-              .collection("keys")
-              .document("masterKey")
-              .setData(
-            {
-              "masterKey": credentials[0],
-              "salt": credentials[1],
-            },
-          );
-        } else {
-          print("No need for master key");
-          await EncryptionHelper.createHelper("123456");
-          Navigator.pushReplacementNamed(context, "/tokens");
-        }
-        //Navigator.pushReplacementNamed(context,"/tokens");//Navigator.pushReplacementNamed(context, "/tokens");
-      } else {
-        currentUser.sendEmailVerification();
-        print("Email Verification sent");
+      var result = await (Authentication().login(
+        StringBuffer("pushpender661@gmail.com"),
+        StringBuffer("123456"),
+      ));
+      if (result) {
+        Navigator.of(context).pushReplacementNamed("/tokens");
       }
-      /*print("Testing****");
-      await EncryptionHelper.createHelper("123456");
-      var encTestToken =await (await EncryptionHelper.createHelper()).encrypt("I am pushpe");
-      print(encTestToken);
-      print(await (await EncryptionHelper.createHelper()).decrypt(encTestToken));*/
-      
-      
     } catch (e) {
       print(
           "Invalid username or password or the user exists: ${e.toString()} ===");

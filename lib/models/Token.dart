@@ -1,10 +1,13 @@
 import "package:flutter/material.dart";
 import 'package:otp/otp.dart';
+import 'package:totp_app/encryption/otp.dart';
 import "../encryption/encryption.dart";
+import "../db/Database.dart";
 
 enum TokenTypes { TOTP, HOTP, INVALID }
 
 class Token {
+  final db = Database();
   int id;
   String label;
   String issuer;
@@ -89,26 +92,43 @@ class Token {
         return ("INVALID");
     }
   }
-  StringBuffer get tokenString{
+
+  StringBuffer get tokenString {
     StringBuffer otpString = StringBuffer("otpauth://");
     otpString.write(this.tokenType);
-    otpString.write(this.label+"?");
-    if(secret!=null){
+    otpString.write(this.label + "?");
+    if (secret != null) {
       otpString.write("secret=${this.secret}");
     }
-    if(this.issuer!=null){
+    if (this.issuer != null) {
       otpString.write("&issuer=${this.issuer}");
     }
-    if(this.algorithm!=null){
+    if (this.algorithm != null) {
       otpString.write("&algorithm=${this.algorithm.toString()}");
     }
-    if(this.period!=null){
+    if (this.period != null) {
       otpString.write("&period=${this.period}");
     }
-    if(this.type == TokenTypes.HOTP && this.counter!=null){
+    if (this.type == TokenTypes.HOTP && this.counter != null) {
       otpString.write("&counter=${this.counter}");
     }
+    print("OTP String created");
+    print(otpString.toString());
     return otpString;
   }
-  
+
+  Future<bool> save() async {
+    var otpString = AppOTP(otpString: this.tokenString);
+    await otpString.encryptString();
+    return await db.saveToken(otpString);
+  }
+
+  Future<void> delete() async {
+    if(this.documentID!=null){
+      db.deleteDocument(this.documentID);
+    }
+    else{
+      print("Document ID is null");
+    }
+  }
 }

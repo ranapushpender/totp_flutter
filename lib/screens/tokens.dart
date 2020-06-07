@@ -1,4 +1,5 @@
 import "package:flutter/material.dart";
+import 'package:totp_app/db/Database.dart';
 import "../widgets/tokens/token_item.dart";
 import "../widgets/tokens/add_bottom_sheet.dart";
 import "../widgets/tokens/edit_bottom_sheet.dart";
@@ -6,6 +7,7 @@ import "../models/Token.dart";
 import 'package:firebase_auth/firebase_auth.dart';
 import "package:cloud_firestore/cloud_firestore.dart";
 import "../encryption/otp.dart";
+import "../encryption/encryption.dart";
 
 // ***REMOVED***
 class Tokens extends StatefulWidget {
@@ -20,6 +22,7 @@ class _TokensState extends State<Tokens> {
   List<AppOTP> tokenStrings = [];
   Firestore db;
   FirebaseUser user;
+  final database = Database();
 
   @override
   void initState() {
@@ -32,8 +35,9 @@ class _TokensState extends State<Tokens> {
   }
 
   void getTokens() async {
+    await EncryptionHelper.createHelper("123456");
     //
-    db = Firestore.instance;
+    /*db = Firestore.instance;
     user = await FirebaseAuth.instance.currentUser();
     var tokenDocuments = (await db
             .collection("/users")
@@ -49,10 +53,10 @@ class _TokensState extends State<Tokens> {
       var decryptedTest = await otp.decryptedString;
       //return Token();
       return Token.createFromOTPString(otpString: await otp.decryptedString,documentID: e.documentID);
-    }));
-
+    }));*/
+    var localTokens = await Database().getAllTokens();
     setState(() {
-      tokens = tokens;
+      tokens = localTokens;
     });
     print("TOkens found : $tokens");
   }
@@ -81,46 +85,29 @@ class _TokensState extends State<Tokens> {
     );
   }
 
-  void deleteToken(int index) async {
-    print("Deleting${tokens[index].documentID}");
-    await db.collection("/users").document(user.uid).collection("tokens").document(tokens[index].documentID).delete();
+  void deleteToken(Token token) async {
+    await token.delete();
     refresh();
   }
 
   Future<void> addToken(AppOTP token) async {
-    Token.createFromOTPString(otpString: await token.decryptedString);
-    try {
-      db.collection("/users").document(user.uid).collection("tokens").add(
-            token.toMap(),
-          );
-      Token tokenToAdd = Token.createFromOTPString(
-        otpString: await token.decryptedString,
-      );
-      refresh();
-    } catch (e) {
-      print("Error while adding : $e");
+
+    Token tk = Token.createFromOTPString(otpString: token.otpString);
+    var result = await tk.save();
+    if(result){
+      print("TOken saved");
+      await refresh();
+    }
+    else{
+      print("Token not saved");
     }
   }
 
   Future<void> refresh() async {
-    var tokenDocuments = (await db
-            .collection("/users")
-            .document(user.uid)
-            .collection("tokens")
-            .getDocuments())
-        .documents;
-
-    tokens = await Future.wait(tokenDocuments.map((e) async {
-      AppOTP otp = AppOTP(otpString: new StringBuffer(e["otpString"]));
-      //    print("OTP : ${otp.otpString}");
-//      var otpTest = (await otp.decryptedString).toString();
-      var decryptedTest = await otp.decryptedString;
-      //return Token();
-      return Token.createFromOTPString(otpString: await otp.decryptedString);
-    }));
+    var localTokens = await Database().getAllTokens();
 
     setState(() {
-      tokens = tokens;
+      tokens = localTokens;
     });
   }
 

@@ -90,4 +90,9 @@ class Database {
     );
     return tokens;
   }
+
+  Future<Stream<QuerySnapshot>> getAllTokensStream() async {
+    var user = await FirebaseAuth.instance.currentUser();
+    return db.collection("/users").document(user.uid).collection("tokens").snapshots();
+  }
 }

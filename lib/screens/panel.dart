@@ -26,23 +26,20 @@ class _PanelState extends State<Panel> {
     TokenList(),
   ];
   final List<Map<String, dynamic>> navigationItems = [
-    {
-      "tag": "OTP",
-      "icon": Icons.list,
-      "title":"Tokens"
-    },
-    {
-      "tag": "Export",
-      "icon": Icons.tap_and_play,
-      "title":"Export"
-    },
-    {
-      "tag": "Support",
-      "icon": Icons.person,
-      "title":"Support"
-    },
+    {"tag": "OTP", "icon": Icons.list, "title": "Tokens"},
+    {"tag": "Export", "icon": Icons.tap_and_play, "title": "Export"},
+    {"tag": "Support", "icon": Icons.person, "title": "Support"},
   ];
 
+  Future<void> addToken(AppOTP token) async {
+    Token tk = Token.createFromOTPString(otpString: token.otpString);
+    var result = await tk.save();
+    if (result) {
+      print("TOken saved");
+    } else {
+      print("Token not saved");
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -65,7 +62,6 @@ class _PanelState extends State<Panel> {
             },
           ).toList())
         ],
-
         currentIndex: this.currentIndex,
         unselectedItemColor: Colors.grey,
         showUnselectedLabels: false,
@@ -73,12 +69,19 @@ class _PanelState extends State<Panel> {
       ),
       floatingActionButton: (currentIndex == 0)
           ? FloatingActionButton(
-              onPressed: () {},
+              onPressed: () {
+                showModalBottomSheet(context: context, builder: (_){
+                  return AddBottomSheet(addToken: this.addToken,);
+                });
+              },
               child: Icon(Icons.add),
             )
           : null,
       body: Stack(alignment: Alignment.topCenter, children: <Widget>[
-        PanelHeader(title:this.navigationItems[this.currentIndex]["title"],tag: this.navigationItems[this.currentIndex]["tag"],),
+        PanelHeader(
+          title: this.navigationItems[this.currentIndex]["title"],
+          tag: this.navigationItems[this.currentIndex]["tag"],
+        ),
         this.widgets[this.currentIndex],
       ]),
     );

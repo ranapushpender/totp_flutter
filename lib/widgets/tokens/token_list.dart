@@ -12,7 +12,8 @@ import "../../encryption/encryption.dart";
 
 // ***REMOVED***
 class TokenList extends StatefulWidget {
-  TokenList({Key key}) : super(key: key);
+  String searchString="";
+  TokenList({Key key,this.searchString}) : super(key: key);
 
   @override
   _TokenListState createState() => _TokenListState();
@@ -21,7 +22,6 @@ class TokenList extends StatefulWidget {
 class _TokenListState extends State<TokenList> {
   List<Token> tokens = [];
   final database = Database();
-  var searchString = TextEditingController(text: "");
 
   @override
   void initState() {
@@ -34,8 +34,7 @@ class _TokenListState extends State<TokenList> {
   }
 
   void getTokens() async {
-    await EncryptionHelper.createHelper("123456");
-    var hello = (await Database().getAllTokensStream()).listen((event) async {
+    (await Database().getAllTokensStream()).listen((event) async {
       var tokenDocuments = event.documents;
       var localTokens = await Future.wait(
         tokenDocuments.map(
@@ -47,14 +46,20 @@ class _TokenListState extends State<TokenList> {
         ),
       );
       setState(() {
-        tokens = localTokens;
+        if (this.widget.searchString != null && this.widget.searchString.trim() != "") {
+          tokens = localTokens.where((element) {
+            if (element.label.toLowerCase().contains(this.widget.searchString.toLowerCase().trim()) ||
+                element.issuer.toLowerCase().contains(this.widget.searchString.toLowerCase().trim())) {
+              return true;
+            } else {
+              return false;
+            }
+          }).toList();
+        } else {
+          tokens = localTokens;
+        }
       });
     });
-    /* var localTokens = await Database().getAllTokens();
-    setState(() {
-      tokens = localTokens;
-    });
-    print("TOkens found : $tokens");*/
   }
 
   void addTokenTest() async {}

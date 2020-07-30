@@ -84,6 +84,7 @@ class _TokenListState extends State<TokenList> {
 
   Future<void> addToken(AppOTP token) async {
     Token tk = Token.createFromOTPString(otpString: token.otpString);
+    print("Token Object Created");
     var result = await tk.save();
     if (result) {
       print("TOken saved");

@@ -64,6 +64,7 @@ class EncryptionHelper {
   }
 
   Future<String> encrypt(String token) async {
+    print(this.encryptionKey);
     return await this.platform.invokeMethod("encrypt",{"key":this.encryptionKey,"token":token});
   }
   Future<String> decrypt(String token) async {

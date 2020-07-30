@@ -23,6 +23,9 @@ class Authentication {
       if (user.isEmailVerified) {
         await Database().initializeUserCollection(user.uid);
       }
+      else{
+        await this.sendVerificationEmail();
+      }
       var passwordFromStorage =
           await DeviceStorage().saveEncryptionKey(password);
        print("saving password");

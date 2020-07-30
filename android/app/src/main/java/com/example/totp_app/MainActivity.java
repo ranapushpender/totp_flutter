@@ -54,6 +54,7 @@ public class MainActivity extends FlutterActivity {
                         result.success(decryptKey(call.argument("encKey").toString(),call.argument("masterKey").toString()));
                     }
                     else if(call.method.equals("encrypt")){
+                        Log.d("Hello",call.argument("key"));
                         result.success(encryptToken(call.argument("token").toString(),call.argument("key").toString()));
                     }
                     else if(call.method.equals("decrypt")){

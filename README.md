@@ -1,16 +1,16 @@
-# totp_app
+# TOTP Generator flutter
+* TOTP generation app made with flutter which uses client side encryption.
+* Project will be available for open source use when the project will be completed till then copying or using parts of the code for this app is prohibited.
+* The project will allow you to use your own firebase account.
+* AES-256 encryption for the data and PBKDF-HMAC-SHA-256 used for hashing.
+* Encryption key is independent of your password.
 
-A new Flutter project.
+# Note
+* Copying or using any part of this project's code without explicit permission of Pushpender Rana the owner of the github account is strictly prohibited.
+* Copyright Pushpender Rana - 2020
 
 ## Getting Started
+For more information visit
 
-This project is a starting point for a Flutter application.
+- [More about TOTP app](https://stackweb.net/2020/04/07/totp-flutter-client-side-encryption.html)
 
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
-
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.

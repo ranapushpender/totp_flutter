@@ -6,15 +6,22 @@ class Login extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      alignment: Alignment.topCenter,
-      child: Column(
-        children: <Widget>[LoginHeader(), LoginBody()],
+      child: Stack(
+        fit: StackFit.loose,
+        children: <Widget>[
+          LoginHeader(),
+          Container(
+            margin: EdgeInsets.only(top: 80),
+            child: Align(
+              child: LoginBody(),
+              alignment: Alignment.center,
+            ),
+          ),
+        ],
       ),
     );
   }
 }
-
-
 
 class LoginHeader extends StatelessWidget {
   const LoginHeader({
@@ -26,21 +33,18 @@ class LoginHeader extends StatelessWidget {
     return Stack(
       alignment: Alignment.center,
       children: <Widget>[
-        Image.asset(
+        /*Image.asset(
           "assets/login-header.png",
-          width: 420,
-          height: 260,
+          width: double.infinity,
+          height: 500,
           fit: BoxFit.cover,
-        ),
-        Image.asset(
-          "assets/login-image.png",
-          width: 108,
-          height: 117,
+        ),*/
+        Container(
+          width: double.infinity,
+          height: 480,
+          decoration: BoxDecoration(color: Color.fromRGBO(55, 163, 255, 1)),
         ),
       ],
     );
   }
 }
-
-
-

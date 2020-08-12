@@ -3,10 +3,18 @@ import 'package:totp_app/widgets/panel/header_items/header_bar.dart';
 import 'package:totp_app/widgets/panel/header_items/header_status.dart';
 import 'package:totp_app/widgets/panel/header_items/search_bar.dart';
 
-class PanelHeader extends StatelessWidget {
+class PanelHeader extends StatefulWidget {
   final String title;
   final String tag;
-  PanelHeader({this.title, this.tag});
+  final searchFunction;
+
+  PanelHeader({this.title, this.tag, this.searchFunction});
+
+  @override
+  _PanelHeaderState createState() => _PanelHeaderState();
+}
+
+class _PanelHeaderState extends State<PanelHeader> {
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -32,8 +40,12 @@ class PanelHeader extends StatelessWidget {
                 SizedBox(
                   height: 8,
                 ),
-                Headerbar(title: this.title),
-                (this.tag == "OTP") ? Searchbar() : Container(),
+                Headerbar(title: this.widget.title),
+                (this.widget.tag == "OTP")
+                    ? Searchbar(
+                        searchFunction: widget.searchFunction,
+                      )
+                    : Container(),
                 SizedBox(
                   height: 8,
                 ),

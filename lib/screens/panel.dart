@@ -22,14 +22,25 @@ class Panel extends StatefulWidget {
 
 class _PanelState extends State<Panel> {
   int currentIndex = 0;
-  List<Widget> widgets = [
-    TokenList(),
-  ];
+  String searchString = "";
+  List<Widget> widgets = [];
   final List<Map<String, dynamic>> navigationItems = [
     {"tag": "OTP", "icon": Icons.list, "title": "Tokens"},
     {"tag": "Export", "icon": Icons.tap_and_play, "title": "Export"},
     {"tag": "Support", "icon": Icons.person, "title": "Support"},
   ];
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  void onSearchTextChanged(eventData) {
+    setState(() {
+      this.searchString = eventData;
+    });
+    print("Search string $searchString");
+  }
 
   Future<void> addToken(AppOTP token) async {
     Token tk = Token.createFromOTPString(otpString: token.otpString);
@@ -43,6 +54,11 @@ class _PanelState extends State<Panel> {
 
   @override
   Widget build(BuildContext context) {
+    widgets = [
+      TokenList(
+        searchString: this.searchString,
+      )
+    ];
     return Scaffold(
       bottomNavigationBar: BottomNavigationBar(
         items: [
@@ -70,9 +86,13 @@ class _PanelState extends State<Panel> {
       floatingActionButton: (currentIndex == 0)
           ? FloatingActionButton(
               onPressed: () {
-                showModalBottomSheet(context: context, builder: (_){
-                  return AddBottomSheet(addToken: this.addToken,);
-                });
+                showModalBottomSheet(
+                    context: context,
+                    builder: (_) {
+                      return AddBottomSheet(
+                        addToken: this.addToken,
+                      );
+                    });
               },
               child: Icon(Icons.add),
             )
@@ -81,6 +101,7 @@ class _PanelState extends State<Panel> {
         PanelHeader(
           title: this.navigationItems[this.currentIndex]["title"],
           tag: this.navigationItems[this.currentIndex]["tag"],
+          searchFunction: this.onSearchTextChanged,
         ),
         this.widgets[this.currentIndex],
       ]),

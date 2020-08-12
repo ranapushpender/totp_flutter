@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:totp_app/authentication/auth.dart';
+import 'package:totp_app/models/Device.dart';
 import 'package:totp_app/otp/otp.dart';
 import 'package:totp_app/models/Token.dart';
 import "../encryption/encryption.dart";
@@ -91,8 +92,52 @@ class Database {
     return tokens;
   }
 
+  Future<bool> saveDevice(Device device) async {
+    try {
+      var user = await FirebaseAuth.instance.currentUser();
+      await db
+          .collection("/users")
+          .document(user.uid)
+          .collection("devices")
+          .add(device.toMap());
+      return true;
+    } catch (e) {
+      print(e);
+      return false;
+    }
+  }
+
+  Future<bool> deleteDevice(Device device) async {
+    var user = await FirebaseAuth.instance.currentUser();
+    try {
+      await db
+          .collection("/users")
+          .document(user.uid)
+          .collection("devices")
+          .document(device.id)
+          .delete();
+      return true;
+    } catch (e) {
+      print("Error while deleting : $e");
+      return false;
+    }
+  }
+
+  Future<Stream<QuerySnapshot>> getAllDevicesStream() async {
+    var user = await FirebaseAuth.instance.currentUser();
+    return db
+        .collection("/users")
+        .document(user.uid)
+        .collection("devices")
+        .snapshots();
+  }
+
   Future<Stream<QuerySnapshot>> getAllTokensStream() async {
     var user = await FirebaseAuth.instance.currentUser();
-    return db.collection("/users").document(user.uid).collection("tokens").snapshots();
+    return db
+        .collection("/users")
+        .document(user.uid)
+        .collection("tokens")
+        .snapshots();
   }
 }

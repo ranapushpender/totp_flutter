@@ -17,22 +17,25 @@ import java.util.List;
 import io.flutter.Log;
 import io.flutter.embedding.android.FlutterActivity;
 import io.flutter.embedding.android.FlutterActivity;
+import io.flutter.embedding.android.FlutterFragmentActivity;
 import io.flutter.embedding.engine.FlutterEngine;
 import io.flutter.plugin.common.MethodChannel;
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler;
 import io.flutter.plugin.common.MethodChannel.Result;
 import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugins.GeneratedPluginRegistrant;
+import io.flutter.embedding.engine.plugins.shim.ShimPluginRegistry;
 
-public class MainActivity extends FlutterActivity {
+public class MainActivity extends FlutterFragmentActivity {
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
-        //\GeneratedPluginRegistrant.registerWith(getFlutterEngine());
+        GeneratedPluginRegistrant.registerWith(getFlutterEngine());
         new MethodChannel(getFlutterEngine().getDartExecutor().getBinaryMessenger(),"com.flutter.epic/epic").setMethodCallHandler(
             new MethodCallHandler(){
                 @Override
                 public void onMethodCall(MethodCall call,Result result)
                 {
+                    Log.d("Method CAlled : ","MEthod called hello test");
                     if(call.method.equals("getResponse"))
                     {
                         result.success(101);
@@ -178,6 +181,10 @@ public class MainActivity extends FlutterActivity {
         }
         return decrypted;
     }
-
+    /*@Override
+    public void configureFlutterEngine(FlutterEngine flutterEngine) {
+      // Use the GeneratedPluginRegistrant to add every plugin that's in the pubspec.
+      GeneratedPluginRegistrant.registerWith(new ShimPluginRegistry(flutterEngine));
+    }*/
 
 }

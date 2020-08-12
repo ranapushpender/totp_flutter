@@ -26,11 +26,10 @@ class Home extends StatefulWidget {
 }
 
 class HomeState extends State<Home> {
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color.fromRGBO(55, 163, 255, 1),
+      /*backgroundColor: Color.fromRGBO(55, 163, 255, 1),*/
       body: Container(
         margin: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
         child: Login(),

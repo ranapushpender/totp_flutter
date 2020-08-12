@@ -18,7 +18,7 @@ class _PanelHeaderState extends State<PanelHeader> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 190,
+      height: widget.title.toLowerCase() == "tokens" ? 190 : 130,
       width: MediaQuery.of(context).size.width,
       margin: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
       child: Stack(
@@ -30,7 +30,9 @@ class _PanelHeaderState extends State<PanelHeader> {
             decoration: BoxDecoration(
               image: DecorationImage(
                   image: AssetImage("assets/tokens-header.png"),
-                  fit: BoxFit.cover),
+                  fit: widget.title.toLowerCase() == "tokens"
+                      ? BoxFit.cover
+                      : BoxFit.fill),
             ),
           ),
           Padding(

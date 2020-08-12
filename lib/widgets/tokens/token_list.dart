@@ -12,8 +12,8 @@ import "../../encryption/encryption.dart";
 
 // ***REMOVED***
 class TokenList extends StatefulWidget {
-  String searchString="";
-  TokenList({Key key,this.searchString}) : super(key: key);
+  final String searchString;
+  TokenList({Key key, this.searchString}) : super(key: key);
 
   @override
   _TokenListState createState() => _TokenListState();
@@ -46,18 +46,7 @@ class _TokenListState extends State<TokenList> {
         ),
       );
       setState(() {
-        if (this.widget.searchString != null && this.widget.searchString.trim() != "") {
-          tokens = localTokens.where((element) {
-            if (element.label.toLowerCase().contains(this.widget.searchString.toLowerCase().trim()) ||
-                element.issuer.toLowerCase().contains(this.widget.searchString.toLowerCase().trim())) {
-              return true;
-            } else {
-              return false;
-            }
-          }).toList();
-        } else {
-          tokens = localTokens;
-        }
+        tokens = localTokens;
       });
     });
   }
@@ -110,6 +99,23 @@ class _TokenListState extends State<TokenList> {
 
   @override
   Widget build(BuildContext context) {
+    print("Executed ${widget.searchString}");
+    final tokensToShow = (widget.searchString == null ||
+            widget.searchString == "")
+        ? tokens
+        : tokens.where((element) {
+            if (element.label
+                    .toLowerCase()
+                    .contains(this.widget.searchString.toLowerCase().trim()) ||
+                element.issuer
+                    .toLowerCase()
+                    .contains(this.widget.searchString.toLowerCase().trim())) {
+              return true;
+            } else {
+              return false;
+            }
+          }).toList();
+
     return Container(
       margin: EdgeInsets.only(top: 185),
       child: SingleChildScrollView(
@@ -126,12 +132,12 @@ class _TokenListState extends State<TokenList> {
                       height: 28,
                     )
                   : TokenItem(
-                      token: tokens[index - 1],
+                      token: tokensToShow[index - 1],
                       showEditDialog: this.showEditDialog,
                       index: index - 1,
                     );
             },
-            itemCount: tokens.length + 1,
+            itemCount: tokensToShow.length + 1,
           ),
         ),
       ),

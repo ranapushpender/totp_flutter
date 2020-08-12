@@ -1,7 +1,17 @@
 import "package:flutter/material.dart";
 
-class Searchbar extends StatelessWidget {
-  
+class Searchbar extends StatefulWidget {
+  final searchFunction;
+
+  Searchbar({this.searchFunction});
+
+  @override
+  _SearchbarState createState() => _SearchbarState();
+}
+
+class _SearchbarState extends State<Searchbar> {
+  TextEditingController searchController = new TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -22,6 +32,8 @@ class Searchbar extends StatelessWidget {
       child: ClipRRect(
         borderRadius: BorderRadius.circular(5),
         child: TextField(
+          onChanged: widget.searchFunction,
+          controller: this.searchController,
           cursorColor: Colors.white,
           style: TextStyle(color: Colors.white),
           decoration: InputDecoration(

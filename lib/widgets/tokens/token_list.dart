@@ -13,7 +13,9 @@ import "../../encryption/encryption.dart";
 // ***REMOVED***
 class TokenList extends StatefulWidget {
   final String searchString;
-  TokenList({Key key, this.searchString}) : super(key: key);
+  final changeCurrentTokenAndSend;
+  TokenList({Key key, this.searchString, this.changeCurrentTokenAndSend})
+      : super(key: key);
 
   @override
   _TokenListState createState() => _TokenListState();
@@ -135,6 +137,8 @@ class _TokenListState extends State<TokenList> {
                       token: tokensToShow[index - 1],
                       showEditDialog: this.showEditDialog,
                       index: index - 1,
+                      changeCurrentTokenAndSend:
+                          widget.changeCurrentTokenAndSend,
                     );
             },
             itemCount: tokensToShow.length + 1,

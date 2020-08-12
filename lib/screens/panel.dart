@@ -28,6 +28,7 @@ class _PanelState extends State<Panel> {
   int currentIndex = 0;
   String searchString = "";
   List<Widget> widgets = [];
+  String currentToken = "322987";
   final List<Map<String, dynamic>> navigationItems = [
     {"tag": "OTP", "icon": Icons.list, "title": "Tokens"},
     {"tag": "Devices", "icon": Icons.tap_and_play, "title": "Devices"},
@@ -79,6 +80,13 @@ class _PanelState extends State<Panel> {
     print("Search string $searchString");
   }
 
+  void changeCurrentTokenAndSend(String value) {
+    setState(() {
+      currentToken = value;
+      currentIndex = 1;
+    });
+  }
+
   Future<void> addToken(AppOTP token) async {
     Token tk = Token.createFromOTPString(otpString: token.otpString);
     var result = await tk.save();
@@ -99,9 +107,12 @@ class _PanelState extends State<Panel> {
   Widget build(BuildContext context) {
     widgets = [
       TokenList(
-        searchString: this.searchString,
+          searchString: this.searchString,
+          changeCurrentTokenAndSend: changeCurrentTokenAndSend),
+      DevicesScreen(
+        devicesToShow: devicesList,
+        currentToken: currentToken,
       ),
-      DevicesScreen(devicesToShow: devicesList),
       Export(),
     ];
     return Scaffold(

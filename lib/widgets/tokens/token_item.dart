@@ -7,7 +7,12 @@ class TokenItem extends StatefulWidget {
   Token token;
   final showEditDialog;
   final int index;
-  TokenItem({this.token, this.showEditDialog,this.index});
+  final changeCurrentTokenAndSend;
+  TokenItem(
+      {this.token,
+      this.showEditDialog,
+      this.index,
+      this.changeCurrentTokenAndSend});
 
   @override
   _TokenItemState createState() => _TokenItemState();
@@ -92,7 +97,7 @@ class _TokenItemState extends State<TokenItem> {
               child: Container(
                 margin: EdgeInsets.symmetric(horizontal: 15),
                 child: InkWell(
-                  onTap: (){
+                  onTap: () {
                     widget.showEditDialog(widget.index);
                   },
                   child: Column(
@@ -128,7 +133,20 @@ class _TokenItemState extends State<TokenItem> {
                 children: <Widget>[
                   FlatButton(
                     child: Text(this.generatedToken.toString()),
-                    onPressed: () {},
+                    onPressed: () {
+                      final snackBar = SnackBar(
+                        content:
+                            Text('Tap ok to send this to one of your devices'),
+                        action: SnackBarAction(
+                          label: "SEND",
+                          onPressed: () {
+                            widget.changeCurrentTokenAndSend(generatedToken);
+                            print("YOLO");
+                          },
+                        ),
+                      );
+                      Scaffold.of(context).showSnackBar(snackBar);
+                    },
                     textColor: Color.fromRGBO(25, 208, 36, 1),
                   )
                 ],

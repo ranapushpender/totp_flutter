@@ -3,7 +3,8 @@ import 'package:totp_app/models/Device.dart';
 
 class DeviceItem extends StatelessWidget {
   final Device device;
-  DeviceItem({this.device});
+  final onDeviceItemClick;
+  DeviceItem({this.device, this.onDeviceItemClick});
 
   Widget build(BuildContext context) {
     return (Container(
@@ -29,7 +30,9 @@ class DeviceItem extends StatelessWidget {
               child: Container(
                 margin: EdgeInsets.symmetric(horizontal: 15),
                 child: InkWell(
-                  onTap: () {},
+                  onTap: () {
+                    onDeviceItemClick(device);
+                  },
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[

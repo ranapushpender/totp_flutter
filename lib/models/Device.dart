@@ -19,8 +19,11 @@ class Device {
     helper = new PublicKeyEncryptionHelper(this.devicePublicKey);
   }
 
-  String sendToken(String token) {
-    return helper.encrypt(token);
+  Future<void> sendToken(String token) async {
+     final db = Database();
+     print("Sending to deive");
+     await db.sendToDevice(helper.encrypt(token), this);
+     
   }
 
   Map<String, String> toMap() {

@@ -5,6 +5,7 @@ import "package:cloud_firestore/cloud_firestore.dart";
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:encrypt/encrypt.dart';
 import 'package:encrypt/encrypt_io.dart';
+import 'package:password/password.dart';
 import 'package:pointycastle/asymmetric/api.dart';
 
 class EncryptionHelper {
@@ -23,6 +24,10 @@ class EncryptionHelper {
   }
 
   Future<void> init(String password) async {
+    final testPass = Password.hash(
+        password, new PBKDF2(iterationCount: 100, desiredKeyLength: 32));
+    print("The password after hashing with this is :  $testPass");
+
     this.db = Firestore.instance;
     this.user = await FirebaseAuth.instance.currentUser();
     var encryptedMasterKeyDocument = await this

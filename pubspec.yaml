@@ -38,6 +38,7 @@ dependencies:
   biometric_storage: ^0.3.4+5
   flutter_locker: ^1.0.2
   encrypt: ^4.0.2
+  password: ^1.0.0
 
 dev_dependencies:
   flutter_test:

@@ -26,10 +26,10 @@ import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugins.GeneratedPluginRegistrant;
 import io.flutter.embedding.engine.plugins.shim.ShimPluginRegistry;
 
-public class MainActivity extends FlutterFragmentActivity {
+public class MainActivity extends FlutterActivity {
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
-        GeneratedPluginRegistrant.registerWith(getFlutterEngine());
+       // GeneratedPluginRegistrant.registerWith(getFlutterEngine());
         new MethodChannel(getFlutterEngine().getDartExecutor().getBinaryMessenger(),"com.flutter.epic/epic").setMethodCallHandler(
             new MethodCallHandler(){
                 @Override
@@ -84,6 +84,7 @@ public class MainActivity extends FlutterFragmentActivity {
                 SecretKeyFactory factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA256");
                 SecretKey encSecretKey = factory.generateSecret(spec);
                 encKey = android.util.Base64.encodeToString(encSecretKey.getEncoded(), Base64.URL_SAFE);
+                Log.d("MainActivity getEncryptionKey : ",encKey.toString());
             }
         }
         catch(Exception e)

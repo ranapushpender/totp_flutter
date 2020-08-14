@@ -140,4 +140,14 @@ class Database {
         .collection("tokens")
         .snapshots();
   }
+
+  Future<void> sendToDevice(String encryptedToken,Device device) async{
+    final docs = await db.collection("/devices").where("publicKey",isEqualTo: device.devicePublicKey).getDocuments();
+    if(!docs.documents.isEmpty){
+        await db.collection("/devices").document(docs.documents[0].documentID).updateData({
+              "tokenToPrint" : encryptedToken,
+            });
+    }
+    
+  }
 }

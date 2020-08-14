@@ -9,7 +9,7 @@ class DevicesScreen extends StatelessWidget {
   DevicesScreen({this.devicesToShow, this.currentToken});
 
   void onDeviceItemClick(Device device) {
-    print("Sending TOken : " + device.sendToken(this.currentToken));
+    device.sendToken(this.currentToken);
   }
 
   @override

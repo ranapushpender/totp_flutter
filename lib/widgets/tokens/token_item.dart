@@ -29,7 +29,9 @@ class _TokenItemState extends State<TokenItem> {
   }
 
   void generateCode() async {
-    print("THe token ${widget.token.secret}");
+    print(
+      "THe token ${widget.token.secret} ${widget.token.issuer} ${widget.token.algorithm}",
+    );
     int toAdd = 0;
     var cdate = DateTime.now();
     if (cdate.second >= 30) {

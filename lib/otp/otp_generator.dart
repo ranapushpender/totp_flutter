@@ -13,13 +13,15 @@ class OTPGenerator {
       var cdate = DateTime.now();
       switch (token.type) {
         case TokenTypes.TOTP:
+          print("I am totp ${token.secret} ${token.period} ${token.algorithm}");
+          print(OTP.generateTOTPCodeString("JBSWY3DPEHPK3PXP", 1362302550000));
           generatedToken = OTP.generateTOTPCodeString(
-            token.secret.toString() ,
-            cdate.toUtc().millisecondsSinceEpoch,
+            token.secret.toString(),
+            DateTime.now().millisecondsSinceEpoch,
             interval: token.period != null ? token.period : 30,
             length: 6,
             algorithm:
-                token.algorithm != null ? token.algorithm : Algorithm.SHA256,
+                token.algorithm != null ? token.algorithm : Algorithm.SHA1,
           );
           break;
         case TokenTypes.HOTP:

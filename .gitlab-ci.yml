@@ -4,6 +4,7 @@ build-apk:
   image: ranapushpender/docker-flutter-build
   stage: build
   script:
+    - export GITHUB_PAT=$GITHUB_PAT
     - ./build_apk.sh  
   only:
     - tags

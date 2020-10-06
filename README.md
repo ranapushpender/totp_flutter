@@ -6,7 +6,9 @@
 * Encryption key is independent of your password.
 
 # Build App
-
+* Setup a local flutter environment or use ranapushpender/docker-flutter-build image
+* Run : flutter clean
+* Run : flutter build apk
 
 # Note
 * Ultra alpha builds are present in the release section. Use as your daily driver as your own risk. You are responsible for loosing access to your accounts if the app fails.

@@ -1,5 +1,6 @@
 #!/bin/bash
 apt install curl file -y
+PATH=$PATH:/home/build/tools/bin:/home/build/tools/platform-tools:/home/build/flutter/bin
 flutter clean
 flutter build apk
 HEAD_COMMIT_ID=`git rev-parse HEAD`

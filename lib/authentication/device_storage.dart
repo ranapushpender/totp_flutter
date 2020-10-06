@@ -1,6 +1,6 @@
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_locker/flutter_locker.dart';
-import 'package:biometric_storage/biometric_storage.dart';
+//import 'package:biometric_storage/biometric_storage.dart';
 
 class DeviceStorage {
   final storage = new FlutterSecureStorage();

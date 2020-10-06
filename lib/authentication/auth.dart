@@ -3,7 +3,7 @@ import 'package:totp_app/encryption/encryption.dart';
 import "../models/User.dart";
 import "../db/Database.dart";
 import "./device_storage.dart";
-import 'package:biometric_storage/biometric_storage.dart';
+//import 'package:biometric_storage/biometric_storage.dart';
 class Authentication {
   final FirebaseAuth auth = FirebaseAuth.instance;
 

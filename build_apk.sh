@@ -3,7 +3,6 @@ apt install curl file -y
 PATH=$PATH:/home/build/tools/bin:/home/build/tools/platform-tools:/home/build/flutter/bin
 HEAD_COMMIT_ID=`git rev-parse HEAD`
 echo "Head is at "$HEAD_COMMIT_ID
-TAG_NAME=`git tag --points-at $HEAD_COMMIT_ID`
 echo "TAG_NAME is "$TAG_NAME
 echo "At Line 11"
 API_JSON=$(printf '{"tag_name": "%s","target_commitish": "master","name": "TOTP-Flutter-%s","body": "Release of version %s","draft": false,"prerelease": true}' $TAG_NAME $TAG_NAME $TAG_NAME)

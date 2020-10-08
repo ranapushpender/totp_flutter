@@ -1,0 +1,19 @@
+kind: pipeline
+type: docker
+name: default
+
+steps:
+- name: android
+  image: ranapushpender/docker-flutter-build
+  environment:
+      GITHUB_PAT:
+          from_secret: GITHUB_PAT
+      TAG_NAME: ${DRONE_TAG}
+
+  commands:
+  - export GITHUB_PAT=$GITHUB_PAT
+  - ./build_apk.sh
+
+trigger:
+    event:
+    - tag

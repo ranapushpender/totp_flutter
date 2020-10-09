@@ -1,0 +1,15 @@
+pool:
+  vmImage: 'ubuntu-18.04'
+
+container: ranapushpender/docker-flutter-build:latest
+
+steps:
+- script: export TAG_NAME=`echo $TAG_NAME | grep -oP 'v(.)*'` && export GITHUB_PAT=$GITHUB_PAT && ./build_apk.sh
+  env:
+    GITHUB_PAT: $(GITHUB_PAT)
+    TAG_NAME: $(Build.SourceBranch)
+
+trigger:
+  branches:
+    include:
+      - refs/tags/*

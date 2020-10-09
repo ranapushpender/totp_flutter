@@ -8,8 +8,5 @@ steps:
   env:
     GITHUB_PAT: $(GITHUB_PAT)
     TAG_NAME: $(Build.SourceBranch)
-
 trigger:
-  branches:
-    include:
-      - refs/tags/*
+- refs/tags/*

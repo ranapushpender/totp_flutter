@@ -1,0 +1,14 @@
+pool:
+  vmImage: 'ubuntu-18.04'
+
+container: ranapushpender/docker-flutter-build:latest
+
+steps:
+- script: export GITHUB_PAT=$GITHUB_PAT && ./build_apk.sh
+  env:
+    GITHUB_PAT: $(GITHUB_PAT)
+
+trigger:
+  branches:
+    include:
+      - refs/tags/*

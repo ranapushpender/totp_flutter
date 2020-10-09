@@ -9,4 +9,6 @@ steps:
     GITHUB_PAT: $(GITHUB_PAT)
     TAG_NAME: $(Build.SourceBranch)
 trigger:
-- refs/tags/*
+  tags:
+      include:
+      - v*

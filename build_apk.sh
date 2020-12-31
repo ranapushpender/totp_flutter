@@ -1,5 +1,5 @@
 #!/bin/bash
-apt install curl file -y
+sudo apt install curl file -y
 PATH=$PATH:/home/build/tools/bin:/home/build/tools/platform-tools:/home/build/flutter/bin
 HEAD_COMMIT_ID=`git rev-parse HEAD`
 echo "Head is at "$HEAD_COMMIT_ID

@@ -4,10 +4,15 @@ pool:
 container: ranapushpender/docker-flutter-build:latest
 
 steps:
+- script: |
+      /tmp/docker exec -t -u 0 ci-container \
+      sh -c "apt-get update && DEBIAN_FRONTEND=noninteractive apt-get -o Dpkg::Options::="--force-confold" -y install sudo"
+    displayName: 'Install Sudo in container'
 - script: export TAG_NAME=`echo $TAG_NAME | grep -oP 'v(.)*'` && export GITHUB_PAT=$GITHUB_PAT && ./build_apk.sh
   env:
     GITHUB_PAT: $(GITHUB_PAT)
     TAG_NAME: $(Build.SourceBranch)
+  displayName: 'Build apk'
 trigger:
   tags:
       include:

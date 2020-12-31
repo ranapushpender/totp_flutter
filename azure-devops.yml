@@ -1,7 +1,9 @@
 pool:
   vmImage: 'ubuntu-18.04'
 
-container: ranapushpender/docker-flutter-build:latest
+container:
+  image: ranapushpender/docker-flutter-build:latest
+  options:  "--name ci-container -v /usr/bin/docker:/tmp/docker:ro"
 
 steps:
 - script: |
